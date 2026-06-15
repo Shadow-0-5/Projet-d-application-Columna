@@ -31,6 +31,7 @@ class Board:
         self.screen.blit(self.board_image, (0, 0))
         for y in range(len(self.dalles)):
             for x in range(len(self.dalles[y])):
+                if self.dalles[y][x] == 0: continue
                 self.screen.blit(
                     self.dalle_images[self.dalles[y][x]-1], (20 + 100 * x, 20 + 100 * y)
                 )
@@ -43,8 +44,6 @@ class Board:
     def available_mouv(self, begin, end, color_turn):
         if self.dalles[end[0]][end[1]] == 0: return False
         if end in self.white_pawns or end in self.black_pawns: return False
-        if begin in self.white_pawns and color_turn == "black" : return False
-        if begin in self.black_pawns and color_turn == "white" : return False
         if begin not in self.white_pawns and begin not in self.black_pawns and self.dalles[begin[0]][begin[1]] + self.dalles[end[0]][end[1]] > 5: return False
 
 
