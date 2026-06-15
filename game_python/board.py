@@ -124,7 +124,7 @@ class Board:
         all_moves = []
         for y in range(6):
             for x in range(6):
-                if self.dalles[y][x] == 0: continue
+                if self.dalles[y][x] == 0 or (y, x) in self.white_pawns or (y,x) in self.black_pawns: continue
                 nb_dalles = self.dalles[y][x]
                 # deplacement a doite
                 for i in range(x+1, 6):
@@ -156,12 +156,12 @@ class Board:
         current_white_stack = 0 
         current_black_stack = 0
 
-        for i in range(5,2):
+        for i in range(5,2, -1):
             for white_position in self.white_pawns:
-                if self.dalles[white_position] == i: 
+                if self.dalles[white_position[0]][white_position[1]] == i: 
                     current_white_stack += 1 
             for black_position in self.black_pawns:
-                if self.dalles[black_position] == i: 
+                if self.dalles[black_position[0]][black_position[1]] == i: 
                     current_black_stack += 1
 
             if current_white_stack == current_black_stack: 
