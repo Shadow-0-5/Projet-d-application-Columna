@@ -97,4 +97,25 @@ class Board:
         pass
 
     def get_result(self):
-        pass
+        current_white_stack = 0 
+        current_black_stack = 0
+
+        for i in range(5,2):
+            for white_position in self.white_pawns:
+                if self.dalles[white_position] == i: 
+                    current_white_stack += 1 
+            for black_position in self.black_pawns:
+                if self.dalles[black_position] == i: 
+                    current_black_stack += 1
+
+            if current_white_stack == current_black_stack: 
+                current_white_stack = 0 
+                current_black_stack = 0
+                continue
+            elif current_black_stack > current_white_stack : 
+                return "black"
+            
+            return "white"
+        
+        return "draw"
+        
