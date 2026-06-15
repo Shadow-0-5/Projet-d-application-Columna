@@ -10,11 +10,19 @@ Proximité des pions aux tours
 
 Nombre points :
 
+Ne pas compter la proximité d'une tour plus basse
+Ne compter qu'une seule tour par pions (ex : distance de 1 à tour de 4 + distance de 2 à tour de 5 = 15+12 mais on prend qu'une seul tour donc = 15, le max) 
+
     distance :  |   0   |   1   |   2   |   3   |   4+
 
-    tour de 5 : |  250  |  150  |  50   |   20  |   0    
-    tour de 4 : |  50   |  20   |  10   |   5   |   0
-    tour de 3 : |  10   |   5   |   2   |   0   |   0   
+    tour de 5 : |  54   |  36   |  15   |   10  |   0    
+    tour de 4 : |  18   |  12   |   6   |   2   |   0
+    tour de 3 : |   6   |   3   |   1   |   0   |   0   
     tour de 2 : |   2   |   1   |   0   |   0   |   0
 
-Avantage du tour de jeu : +20
+Avantage du tour de jeu : +10
+
+
+
+
+
