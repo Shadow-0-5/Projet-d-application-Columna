@@ -7,9 +7,39 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
     <h1>Columna</h1>
-    <div id="board">
-        <img src="../img/board.jpg" alt="board">
-    </div>
+
+    <main class="game-container">
+        
+        <div class="players-row">
+            <div class="player-block">
+                <p id="joueur1">Joueur 1</p>
+                <img src="../img/pion_blanc.png" alt="pion_blanc" class="pion">
+            </div>
+            
+            <div class="player-block">
+                <p id="joueur2">Joueur 2</p>
+                <img src="../img/pion_noir.png" alt="pion_noir" class="pion">
+            </div>
+        </div>
+
+        <div class="board-wrapper">
+            <img src="../img/board.jpg" alt="board" id="board">
+        </div>
+
+        <div id="ExColonnes">
+            <p id="RepCol">Représentation des colonnes de 1 à 5</p>
+            <div class="dalles-container">
+                <img src="../img/dalle1.jpg" alt="dalle1">
+                <img src="../img/dalle2.jpg" alt="dalle2">
+                <img src="../img/dalle3.jpg" alt="dalle3">
+                <img src="../img/dalle4.jpg" alt="dalle4">
+                <img src="../img/dalle5.jpg" alt="dalle5">
+            </div>
+        </div>
+
+    </main>
+
 </body>
 </html>
