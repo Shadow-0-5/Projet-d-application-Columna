@@ -27,7 +27,9 @@ class Main:
         self.current_action = "pawn"  # pawn / slab
 
         self.surface_selected = pygame.Surface((100, 100), pygame.SRCALPHA)
-        self.surface_selected.fill((0, 255, 0, 100))
+        self.surface_selected.fill((0, 255, 0, 70))
+
+        self.all_moves_possible = None
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -43,10 +45,13 @@ class Main:
             if self.current_action == "pawn":
                 if self.current_player.color == "white" and next_case in self.board.white_pawns or self.current_player.color == "black" and next_case in self.board.black_pawns:
                     self.selected_case = next_case
+                    self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
             else:
                 if next_case not in self.board.white_pawns and next_case not in self.board.black_pawns and self.board.dalles[next_case[0]][next_case[1]] > 0:
                     self.selected_case = next_case
+                    self.all_moves_possible = self.board.get_all_slabs_stack()
         else:
+            self.all_moves_possible = None
             if self.board.available_mouv(self.selected_case, next_case, self.current_player.color):
                 self.board.move(self.selected_case, next_case)
                 if self.current_action == "pawn":
@@ -61,6 +66,9 @@ class Main:
         self.board.display()
         if self.selected_case:
             self.screen.blit(self.surface_selected, (10+100*self.selected_case[1], 10+100*self.selected_case[0]))
+            for move in self.all_moves_possible:
+                if self.selected_case == move[0]:
+                    pygame.draw.circle(self.screen, (122,122,122), (move[1][1]*100+60, move[1][0]*100+60), 5)
         pygame.display.flip()
 
     def run(self):
