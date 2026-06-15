@@ -40,10 +40,51 @@ class Board:
             self.screen.blit(self.black_pawns_image, (35+100*i[1], 35+100*i[0]))
 
     # une sous fonction qui vérifie la possibilité du mouvement
-    def available_mouv(sefl):
-        pass
+    def available_mouv(self, begin, end):
+        if self.dalles[end[0]][end[1]] == 0: return False
+        if end in self.white_pawns or end in self.black_pawns: return False
+        if begin not in self.white_pawns and begin not in self.black_pawns and self.dalles[begin[0]][begin[1]] + self.dalles[end[0]][end[1]] > 5: return False
 
-    # une fonction qui déplace un pion
-    # déplace une pile de dalle
-    def mouv_piece(self):
-        pass
+        if end[0] == begin[0]:
+            # mouvement vers la droite
+            if begin[1] < end[1]:
+                for i in range(begin[1]+1, end[1]):
+                    if self.dalles[begin[0]][i] != 0:
+                        return False
+                return True
+            # mouvement vers la gauche
+            if begin[1] > end[1]:
+                for i in range(begin[1]-1, end[1], -1):
+                    if self.dalles[begin[0]][i] != 0:
+                        return False
+                return True
+        
+        if end[1] == begin[1]:
+            # mouvement vers le bas
+            if begin[0] < end[0]:
+                for i in range(begin[0]+1, end[0]):
+                    if self.dalles[i][begin[1]] != 0:
+                        return False
+                return True
+            # mouvement vers le haut
+            if begin[0] > end[0]:
+                for i in range(begin[0]-1, end[0], -1):
+                    if self.dalles[i][begin[1]] != 0:
+                        return False
+                return True
+
+        return False
+        
+
+    # une fonction qui déplace un pion ou une pile
+    def move(self, begin, end):
+        if begin in self.white_pawns:
+            self.white_pawns.remove(begin)
+            self.white_pawns.append(end)
+        elif begin in self.black_pawns:
+            self.black_pawns.remove(begin)
+            self.black_pawns.append(end)
+        else:
+            self.dalles[end[0]][end[1]] += self.dalles[begin[0]][begin[1]]
+            self.dalles[begin[0]][begin[1]] = 0
+
