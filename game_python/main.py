@@ -9,6 +9,7 @@ pygame.init()
 
 from board import Board
 from player import Player
+from math import floor
 
 
 class Main:
@@ -33,11 +34,14 @@ class Main:
                 self.handle_click(*(pygame.mouse.get_pos()))
 
     def handle_click(self, x, y):
-        next_case = (round((x - 10) / 100), round((y - 10) / 100))
+        print(self.selected_case)
+        next_case = (floor((y - 10) / 100), floor((x - 10) / 100))
         if not self.selected_case:
             self.selected_case = next_case
         else:
-            if self.board.available_mouv(self.selected_case, next_case):
+            if self.board.available_mouv(
+                self.selected_case, next_case, self.current_player.color
+            ):
                 self.board.move(self.selected_case, next_case)
                 if self.current_action == "pawn":
                     self.current_action = "slab"
@@ -56,6 +60,7 @@ class Main:
         pygame.display.flip()
 
     def run(self):
+        print(self.current_player.color)
         while self.launched:
             self.handle_events()
             self.display()
