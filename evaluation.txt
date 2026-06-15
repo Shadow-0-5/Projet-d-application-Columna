@@ -1,0 +1,19 @@
+Nombre de points
+Mobilité des pions (nb de cases accessibles en 1 coup) voire en plusieurs coups
+    -> ne pas être encerclé
+    -> Si un coup se retrouve interdit, est ce que ça découvre une alternative
+            --> (deux cases sur la meme ligne, si on me retire la plus proche, j'obtiens la deuxieme)
+Proximité des pions aux tours
+
+
+
+
+Nombre points :
+
+    distance :  |   0   |   1   |   2   |   3   |   4+
+
+    tour de 5 : |  250  |  150  |  50   |   20  |   0    
+    tour de 4 : |  50   |  20   |  10   |   5   |   0
+    tour de 3 : |  10   |   5   |   2   |   0   |   0   
+    tour de 2 : |   2   |   1   |   0   |   0   |   0
+
