@@ -2,5 +2,6 @@
 # Joue les coups
 
 class Player:
-    def __init_(self, IA=False):
+    def __init__(self, color, IA=False):
         self.IA = IA
+        self.color = color
