@@ -17,3 +17,4 @@ Nombre points :
     tour de 3 : |  10   |   5   |   2   |   0   |   0   
     tour de 2 : |   2   |   1   |   0   |   0   |   0
 
+Avantage du tour de jeu : +20
