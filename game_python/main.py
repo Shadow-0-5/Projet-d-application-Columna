@@ -37,8 +37,8 @@ class Main:
         if not self.selected_case:
             self.selected_case = next_case
         else:
-            if Board.available_mouv(self.selected_case, next_case):
-                Board.move(self.selected_case, next_case)
+            if self.board.available_mouv(self.selected_case, next_case):
+                self.board.move(self.selected_case, next_case)
                 if self.current_action == "pawn":
                     self.current_action = "slab"
                 else:
