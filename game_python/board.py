@@ -11,10 +11,11 @@ class Board:
         # une initialisation début de game
         self.screen = screen
 
-        self.dalles = [6][6]
+        self.dalles = []
         for i in range(6):
+            self.dalles.append([])
             for j in range(6):
-                self.dalles[i][j] = 1
+                self.dalles[i].append(1)
 
         self.white_pawns = [(2, 0), (2, 3), (0, 5), (5, 4)]
         self.black_pawns = [(0, 1), (3, 2), (3, 5), (5, 0)]
@@ -31,12 +32,12 @@ class Board:
         for y in range(len(self.dalles)):
             for x in range(len(self.dalles[y])):
                 self.screen.blit(
-                    self.dalle_images[self.dalles[y][x]], (10 + 100 * x, 10 + 100 * y)
+                    self.dalle_images[self.dalles[y][x]-1], (20 + 100 * x, 20 + 100 * y)
                 )
         for i in self.white_pawns:
-            self.screen.blit(self.white_pawns_image, (i[1], i[0]))
+            self.screen.blit(self.white_pawns_image, (35+100*i[1], 35+100*i[0]))
         for i in self.black_pawns:
-            self.screen.blit(self.black_pawns_image, (i[1], i[0]))
+            self.screen.blit(self.black_pawns_image, (35+100*i[1], 35+100*i[0]))
 
     # une sous fonction qui vérifie la possibilité du mouvement
     def available_mouv(sefl):

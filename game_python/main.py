@@ -19,7 +19,7 @@ class Main:
         self.player_white = Player("white")
         self.player_black = Player("black")
 
-        self.current_player = random.choice(self.player_black, self.player_white)
+        self.current_player = random.choice([self.player_black, self.player_white])
 
     def handle_events(self):
         for event in pygame.event.get():
