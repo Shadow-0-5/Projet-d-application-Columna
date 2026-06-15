@@ -90,3 +90,11 @@ class Board:
             self.dalles[end[0]][end[1]] += self.dalles[begin[0]][begin[1]]
             self.dalles[begin[0]][begin[1]] = 0
 
+    def get_all_pawns_move(self, color):
+        pass
+
+    def get_all_slabs_stack(self):
+        pass
+
+    def get_result(self):
+        pass
