@@ -81,7 +81,15 @@ class Main:
         if self.current_player and self.current_player.IA:
             self.previous_move, self.previous_stack = self.current_player.take_action(self.board)
             self.board.move(self.previous_move[0], self.previous_move[1])
+            self.all_moves_possible = self.board.get_all_slabs_stack()
+            if not self.all_moves_possible:
+                print(self.board.get_result())
+                self.current_player = None
             self.board.move(self.previous_stack[0], self.previous_stack[1])
+            self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
+            if not self.all_moves_possible:
+                print(self.board.get_result())
+                self.current_player = None
             self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
 
     def display(self):
