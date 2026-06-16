@@ -112,9 +112,9 @@ class Main:
     def run(self):
         print(self.current_player.color)
         while self.launched:
-            self.update()
             self.handle_events()
             self.display()
+            self.update()
             self.clock.tick(60)
 
 

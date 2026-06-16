@@ -32,7 +32,9 @@ POINTS_EVALUATION = {
     "T2" : 2,
     "T2_D1" : 1,
     "T2_D2" : 0,
-    "T2_D3" : 0
+    "T2_D3" : 0,
+
+    "T1" : 0,
 }
 
 class Player:
@@ -101,12 +103,12 @@ class Player:
     def eval2(self, board : Board):
         white_points = np.zeros((4, 36))
         black_points = np.zeros((4, 36))
-        
 
         for y in range(6):
             for x in range(6):
                 tower_size = board.dalles[y][x]
                 if tower_size <= 1: continue
+    
                 if (y,x) in board.white_pawns:
                     white_points[board.white_pawns.index((y,x)), y*6+x] = POINTS_EVALUATION[f"T{tower_size}"]
                     continue
@@ -116,11 +118,11 @@ class Player:
 
                 for i in range(4):
                     try:
-                        white_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.white_pawns[i], (y,x))}"]
+                        white_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.white_pawns[i], (y, x))}"]
                     except:
                         pass
                     try:
-                        black_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.black_pawns[i], (y,x))}"]
+                        black_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.black_pawns[i], (y, x))}"]
                     except:
                         pass        
 
@@ -133,10 +135,55 @@ class Player:
         valeurs_choisies = black_points[row_ind, col_ind]
         score -= sum(valeurs_choisies)
 
+        white_mobility = [self.CalculMobility(pos, board) for pos in board.white_pawns]
+        black_mobility = [self.CalculMobility(pos, board) for pos in board.black_pawns]
+
+        score += sum([np.sqrt(i) for i in white_mobility])
+        score -= sum([np.sqrt(i) for i in black_mobility])
+
         if self.color == "black":
             score = -score
-        
         return score
+    
+    def CalculMobility(self, pos, board):
+        file = [pos]
+        visites = []
+        cpt = 0
+
+        while file:
+            actual_case = file.pop(0)
+            if actual_case not in visites:
+                visites.append(actual_case)
+                cpt += 1
+
+                for voisin in board.get_voisins(pos):
+                    file.append(voisin)
+        
+        return cpt
+
+    
+
+    # Fonction CalculerMobilite(PositionPion)
+    # File = [PositionPion]
+    # Visites = Ensemble vide
+    # CompteurMobilite = 0
+
+    # Tant que File n'est pas vide:
+    #     CaseActuelle = File.retirerPremier()
+    #     Si CaseActuelle n'est pas dans Visites:
+    #         Visites.ajouter(CaseActuelle)
+    #         CompteurMobilite += 1
+            
+    #         Pour chaque Voisin de CaseActuelle:
+    #             Si Voisin est marchable ET non bloqué par un autre pion:
+    #                 File.ajouter(Voisin)
+                    
+    # Retourner CompteurMobilite
+
+
+
+
+
 
     # def evaluate_position(self, board : Board):
     #     score = 0
