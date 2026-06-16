@@ -17,8 +17,36 @@ socket.onopen = function() {
 };
 
 socket.onmessage = function(event) {
-    // Phase 2 : Afficher la réponse du serveur
-    console.log("Le serveur Python répond :", event.data);
+    // On traduit le texte JSON reçu en objet JavaScript
+    const response = JSON.parse(event.data);
+    console.log("Mise à jour reçue du serveur :", response);
+
+    if (response.status === "sync" || response.status === "update") {
+        const serverState = response.state;
+        
+        // 1. On met à jour les dalles
+        for (let r = 0; r < BOARD_SIZE; r++) {
+            for (let c = 0; c < BOARD_SIZE; c++) {
+                let h = serverState.dalles[r][c];
+                // Dans Python, 0 veut dire vide. Dans JS, null veut dire vide.
+                board[r][c].height = h === 0 ? null : h;
+                board[r][c].pion = null; // On efface tous les pions provisoirement
+            }
+        }
+        
+        // 2. On replace les pions blancs (d'après le serveur)
+        for (const [r, c] of serverState.white_pawns) {
+            board[r][c].pion = 'white';
+        }
+        
+        // 3. On replace les pions noirs (d'après le serveur)
+        for (const [r, c] of serverState.black_pawns) {
+            board[r][c].pion = 'black';
+        }
+        
+        // 4. On redessine l'interface
+        render();
+    }
 };
 
 
@@ -29,11 +57,9 @@ const BOARD_SIZE = 6;
 const MAX_PILE = 5;
 
 // Position initiale des pions (figure 1)
-// Blancs : (0,1), (1,0), (4,0), (5,1) → ligne, col (0-indexé)
-// Noirs : (0,4), (1,5), (4,5), (5,4)
 const INITIAL_PIONS = {
-  white: [[3,2],[5,0],[4,5],[0,2]],
-  black: [[2,3],[1,0],[0,5],[5,3]]
+  white: [[2, 0], [2, 3], [0, 5], [5, 4]],
+  black: [[0, 1], [3, 2], [3, 5], [5, 0]]
 };
 
 let board = []; // board[r][c] = { height: 0-5 ou null (case vide), pion: null|'white'|'black' }
