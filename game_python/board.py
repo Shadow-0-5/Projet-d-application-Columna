@@ -93,31 +93,37 @@ class Board:
     def get_all_pawns_move(self, color):
         all_moves = []
         for coords in (self.white_pawns if color == "white" else self.black_pawns):
-            # deplacement a doite
-            for i in range(coords[1]+1, 6):
-                if self.dalles[coords[0]][i] != 0:
-                    if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
-                        all_moves.append((coords, (coords[0], i)))
-                    break
-            # deplacement a gauche
-            for i in range(coords[1]-1, -1, -1):
-                if self.dalles[coords[0]][i] != 0:
-                    if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
-                        all_moves.append((coords, (coords[0], i)))
-                    break
-            # deplacement en bas
-            for i in range(coords[0]+1, 6):
-                if self.dalles[i][coords[1]] != 0:
-                    if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
-                        all_moves.append((coords, (i, coords[1])))
-                    break
-            # deplacement en haut
-            for i in range(coords[0]-1, -1, -1):
-                if self.dalles[i][coords[1]] != 0:
-                    if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
-                        all_moves.append((coords, (i, coords[1])))
-                    break
+            for e in self.get_one_pawn_move(color, coords):
+                all_moves.append(e)
         return all_moves
+    
+    def get_one_pawn_move(self, color, coords:tuple):
+        """renvoie tous les mouvements possibles pour un pion (= une position)"""
+        all_move_one_pawn = []
+        for i in range(coords[1]+1, 6):
+                if self.dalles[coords[0]][i] != 0:
+                    if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
+                        all_move_one_pawn.append((coords, (coords[0], i)))
+                    break
+        # deplacement a gauche
+        for i in range(coords[1]-1, -1, -1):
+            if self.dalles[coords[0]][i] != 0:
+                if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (coords[0], i)))
+                break
+        # deplacement en bas
+        for i in range(coords[0]+1, 6):
+            if self.dalles[i][coords[1]] != 0:
+                if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (i, coords[1])))
+                break
+        # deplacement en haut
+        for i in range(coords[0]-1, -1, -1):
+            if self.dalles[i][coords[1]] != 0:
+                if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (i, coords[1])))
+                break
+        return all_move_one_pawn
                         
 
     def get_all_slabs_stack(self):
