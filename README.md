@@ -1,6 +1,6 @@
 # Projet-d-application-ISO-
 
-* Setup pour télécharger et coder avec VScode sur BGA Studio 
+## Setup pour télécharger et coder avec VScode sur BGA Studio 
 
 Télécharger l'extension SFTP de natizyskunk.sftp (Version 1.16.3) - SFTP/FTP sync
 
