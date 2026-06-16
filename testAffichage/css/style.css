@@ -89,11 +89,63 @@ h1 {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap; /* Les dalles passent à la ligne si l'écran est trop petit */
+    flex-wrap: wrap; 
 }
 
 .dalles-container img {
     max-width: 80px;
-    width: 15vw; /* Taille fluide selon l'écran */
+    width: 15vw; 
     height: auto;
+}
+
+.dalle {
+    border-radius: 10px;
+}
+
+#dalle2 {
+    filter: drop-shadow(5px 5px 3px black);
+}
+
+#dalle3 {
+    filter: drop-shadow(8px 5px 3px black);
+}
+
+#dalle4 {
+    filter: drop-shadow(10px 5px 3px black);
+}
+
+#dalle5 {
+    filter: drop-shadow(12px 5px 3px black);
+}
+
+.exemples-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: -380px;
+}
+
+.case-dalle {
+    position: relative; 
+    display: inline-block;
+    max-width: 80px; 
+    width: 15vw;
+}
+
+/* La dalle prend toute la place du conteneur */
+.case-dalle .dalle {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.pion-dessus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 60%; 
+    height: auto;
+    z-index: 2; 
 }
