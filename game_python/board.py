@@ -11,19 +11,23 @@ class Board:
         self.screen = screen
 
         self.dalles = []
-        for i in range(6):
-            self.dalles.append([])
-            for j in range(6):
-                self.dalles[i].append(1)
+        self.white_pawns = []
+        self.black_pawns = []
+        if self.screen:
+            for i in range(6):
+                self.dalles.append([])
+                for j in range(6):
+                    self.dalles[i].append(1)
 
-        self.white_pawns = [(2, 0), (2, 3), (0, 5), (5, 4)]
-        self.black_pawns = [(0, 1), (3, 2), (3, 5), (5, 0)]
-        self.board_image = pygame.image.load("img/board.jpg")
-        self.dalle_images = [
-            pygame.image.load(f"img/dalle{i}.jpg") for i in range(1, 6)
-        ]
-        self.black_pawns_image = pygame.image.load("img/pion_noir.png")
-        self.white_pawns_image = pygame.image.load("img/pion_blanc.png")
+            self.white_pawns = [(2, 0), (2, 3), (0, 5), (5, 4)]
+            self.black_pawns = [(0, 1), (3, 2), (3, 5), (5, 0)]
+            
+            self.board_image = pygame.image.load("img/board.jpg")
+            self.dalle_images = [
+                pygame.image.load(f"img/dalle{i}.jpg") for i in range(1, 6)
+            ]
+            self.black_pawns_image = pygame.image.load("img/pion_noir.png")
+            self.white_pawns_image = pygame.image.load("img/pion_blanc.png")
 
     # une fonction display -> affiche le plateau, dalles et pion
     def display(self):
@@ -181,8 +185,9 @@ class Board:
         return "draw"
         
     def copy(self):
-        board = Board(self.screen)
-        board.dalles = self.dalles.copy()
+        board = Board(None)
+        for l in self.dalles:
+            board.dalles.append(l.copy())
         board.white_pawns = self.white_pawns.copy()
         board.black_pawns = self.black_pawns.copy()
         return board

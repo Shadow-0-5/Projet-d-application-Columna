@@ -45,7 +45,7 @@ class Player:
 
     def tour_max(self, board : Board, alpha, beta, profondeur):
         if profondeur == 0:
-            return self.evaluate_position(board)
+            return (self.evaluate_position(board), None)
 
         all_moves_possible = board.get_all_pawns_move(self.color)
         u = None
@@ -71,7 +71,7 @@ class Player:
 
     def tour_min(self, board : Board, alpha, beta, profondeur):
         if profondeur == 0:
-            return self.evaluate_position(board)-20
+            return (self.evaluate_position(board)-20, None)
 
         color = "white" if self.color == "black" else "black"
         all_moves_possible = board.get_all_pawns_move(color)
@@ -105,13 +105,13 @@ class Player:
         for y in range(6):
             for x in range(6):
                 if board.dalles[y][x] == 5 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-                    tour5.append(y, x)
+                    tour5.append((y, x))
                 elif board.dalles[y][x] == 4 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-                    tour4.append(y, x)
+                    tour4.append((y, x))
                 elif board.dalles[y][x] == 3 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-                    tour3.append(y, x)
+                    tour3.append((y, x))
                 elif board.dalles[y][x] == 2 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-                    tour2.append(y, x)
+                    tour2.append((y, x))
         for liste in [board.white_pawns, board.black_pawns]:
             for pawn in liste:
                 if board.dalles[pawn[0]][pawn[1]] == 5:
@@ -136,11 +136,11 @@ class Player:
                     dist5_min = None
                     dist4_min = None
                     for tour in tour5:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist5_min or dist < dist5_min):
                             dist5_min = dist
                     for tour in tour4:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist4_min or dist < dist4_min):
                             dist4_min = dist
                     if dist5_min == 1:
@@ -171,15 +171,15 @@ class Player:
                     dist4_min = None
                     dist3_min = None
                     for tour in tour5:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist5_min or dist < dist5_min):
                             dist5_min = dist
                     for tour in tour4:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist4_min or dist < dist4_min):
                             dist4_min = dist
                     for tour in tour3:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist3_min or dist < dist3_min):
                             dist3_min = dist
 
@@ -232,19 +232,19 @@ class Player:
                     dist3_min = None
                     dist2_min = None
                     for tour in tour5:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist5_min or dist < dist5_min):
                             dist5_min = dist
                     for tour in tour4:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist4_min or dist < dist4_min):
                             dist4_min = dist
                     for tour in tour3:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist3_min or dist < dist3_min):
                             dist3_min = dist
                     for tour in tour2:
-                        dist = len(board.A_Star(pawn, tour))
+                        dist = board.A_Star(pawn, tour)
                         if dist > 0 and (not dist2_min or dist < dist2_min):
                             dist2_min = dist
 

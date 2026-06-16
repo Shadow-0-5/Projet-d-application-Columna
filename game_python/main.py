@@ -21,7 +21,7 @@ class Main:
 
         self.board = Board(self.screen)
         self.player_white = Player("white")
-        self.player_black = Player("black")
+        self.player_black = Player("black", True)
 
         self.current_player = random.choice([self.player_black, self.player_white])
         self.current_action = "pawn"  # pawn / slab
@@ -80,6 +80,8 @@ class Main:
     def update(self):
         if self.current_player and self.current_player.IA:
             self.previous_move, self.previous_stack = self.current_player.take_action(self.board)
+            self.board.move(self.previous_move[0], self.previous_move[1])
+            self.board.move(self.previous_stack[0], self.previous_stack[1])
             self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
 
     def display(self):
@@ -102,8 +104,8 @@ class Main:
     def run(self):
         print(self.current_player.color)
         while self.launched:
-            self.handle_events()
             self.update()
+            self.handle_events()
             self.display()
             self.clock.tick(60)
 
