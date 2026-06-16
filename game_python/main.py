@@ -30,13 +30,15 @@ class Main:
         self.surface_selected.fill((0, 255, 0, 70))
 
         self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
+        self.previous_move = None
+        self.previous_stack = None
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.launched = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.current_player:
+                if self.current_player and not self.current_player.IA:
                     self.handle_click(*(pygame.mouse.get_pos()))
 
 
@@ -57,6 +59,8 @@ class Main:
                 self.board.move(self.selected_case, next_case)
                 if self.current_action == "pawn":
                     self.current_action = "slab"
+                    self.previous_move = (self.selected_case, next_case)
+                    self.previous_stack = None
                     self.all_moves_possible = self.board.get_all_slabs_stack()
                     if not self.all_moves_possible:
                         print(self.board.get_result())
@@ -65,12 +69,18 @@ class Main:
                 else:
                     self.current_action = "pawn"
                     self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
+                    self.previous_stack = (self.selected_case, next_case)
                     self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
                     if not self.all_moves_possible:
                         print(self.board.get_result())
                         self.current_player = None
 
             self.selected_case = None
+
+    def update(self):
+        if self.current_player and self.current_player.IA:
+            self.previous_move, self.previous_stack = self.current_player.take_action()
+            self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
 
     def display(self):
         self.screen.fill("black")
@@ -81,12 +91,19 @@ class Main:
                 for move in self.all_moves_possible:
                     if self.selected_case == move[0]:
                         pygame.draw.circle(self.screen, (122,122,122), (move[1][1]*100+60, move[1][0]*100+60), 5)
+        
+        if self.previous_move:
+            pygame.draw.line(self.screen, (0,50,200), (self.previous_move[0][1]*100+60, self.previous_move[0][0]*100+60), (self.previous_move[1][1]*100+60, self.previous_move[1][0]*100+60), 3)
+        if self.previous_stack:
+            pygame.draw.line(self.screen, (0,50,200), (self.previous_stack[0][1]*100+60, self.previous_stack[0][0]*100+60), (self.previous_stack[1][1]*100+60, self.previous_stack[1][0]*100+60), 3)
+        
         pygame.display.flip()
 
     def run(self):
         print(self.current_player.color)
         while self.launched:
             self.handle_events()
+            self.update()
             self.display()
             self.clock.tick(60)
 
