@@ -582,6 +582,11 @@ function applyInteractions(el, r, c, cell) {
           el.classList.add('valid-move', 'clickable');
           el.addEventListener('click', () => movePion(sr, sc, r, c));
         }
+        else {
+  // clic sur une case non valide → désélectionner
+        el.classList.add('clickable');
+        el.addEventListener('click', cancelSelection);
+        }
       }
     }
   } else if (phase === 'stack') {
@@ -604,6 +609,11 @@ function applyInteractions(el, r, c, cell) {
         if (targets.some(([tr,tc]) => tr===r && tc===c)) {
           el.classList.add('valid-stack', 'clickable');
           el.addEventListener('click', () => stackTiles(sr, sc, r, c));
+        }
+        else {
+  // clic sur une case non valide → désélectionner
+        el.classList.add('clickable');
+        el.addEventListener('click', cancelSelection);
         }
       }
     }
