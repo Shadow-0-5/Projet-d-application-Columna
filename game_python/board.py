@@ -187,6 +187,7 @@ class Board:
         
     def copy(self):
         board = Board(None)
+        board.dalles = []
         for l in self.dalles:
             board.dalles.append(l.copy())
         board.white_pawns = self.white_pawns.copy()

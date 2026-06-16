@@ -3,7 +3,7 @@ let myRole = null; // Stockera 'white', 'black', ou 'spectator'
 // 1. On récupère l'ID de la partie dans l'URL (ex: ?room=A8F3K)
 const urlParams = new URLSearchParams(window.location.search);
 const roomID = urlParams.get('room');
-
+const mode = urlParams.get('mode') || "multi"; // "multi" par défaut si pas précisé
 // Si quelqu'un arrive sur la page sans ID, on le renvoie à l'accueil
 if (!roomID) {
     alert("Aucune partie trouvée. Retour à l'accueil.");
@@ -11,7 +11,7 @@ if (!roomID) {
 }
 
 // 2. On ouvre la connexion vers le serveur Python
-const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/${roomID}`);
+const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/${roomID}?mode=${mode}`);
 
 socket.onopen = function() {
     console.log(`Connecté au serveur Python sur le salon : ${roomID}`);

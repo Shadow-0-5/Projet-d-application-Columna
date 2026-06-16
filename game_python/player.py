@@ -5,7 +5,7 @@ from board import Board
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-PROFONDEUR = 2
+PROFONDEUR = 1
 
 # distance :  |   0   |   1   |   2   |   3   |   4+
 
@@ -63,7 +63,7 @@ class Player:
                 vvboard = vboard.copy()
                 vvboard.move(stack[0], stack[1])
                 u_min, _ = self.tour_min(vvboard, alpha, beta, profondeur-1)
-                if not u or u_min > u:
+                if u is None or u_min > u:
                     a = (move, stack)
                     u = u_min
                 if u >= beta:
@@ -90,7 +90,7 @@ class Player:
                 vvboard = vboard.copy()
                 vvboard.move(stack[0], stack[1])
                 u_max, _ = self.tour_max(vvboard, alpha, beta, profondeur-1)
-                if not u or u_max < u:
+                if u is None or u_max < u:
                     a = (move, stack)
                     u = u_max
                 if u <= alpha:
