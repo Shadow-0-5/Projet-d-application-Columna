@@ -98,3 +98,13 @@ Exemple : Le Front envoie toujours {"action": "MOVE", "from": "A1", "to": "A2"}.
 - Back : Vous branchez votre classe de jeu sur le serveur FastAPI. Dès qu'un message de mouvement valide arrive, vous mettez à jour le jeu, et vous renvoyez le nouveau plateau. Si c'est au tour de l'IA, vous déclenchez votre fonction IA et vous renvoyez le coup de l'IA dans la foulée.
 - Front : Vos potes codent la fonction JS qui efface le plateau et le redessine entièrement dès qu'un JSON de mise à jour est reçu du WebSocket.
 
+### Notes De Claude 
+
+Le **WebSocket** en ws:// (non chiffré) ne fonctionnera pas si votre frontend est hébergé sur GitHub Pages / Vercel en HTTPS — les navigateurs bloquent les connexions mixed content. Il faudra utiliser wss:// (WebSocket sécurisé). Render fournit HTTPS automatiquement donc wss:// sera disponible.
+
+
+**Ce qui manque dans l'architecture**  
+La gestion de la déconnexion. Que se passe-t-il si un joueur ferme son onglet ?  
+FastAPI lèvera une WebSocketDisconnect exception. Il faut la gérer explicitement pour ne pas laisser l'autre joueur bloqué indéfiniment.  
+**Le tour de l'IA.**  
+ L'architecture dit "si c'est au tour de l'IA, on déclenche la fonction IA" — mais si le Minimax est profond, il peut prendre plusieurs secondes. Pendant ce temps le WebSocket est bloqué. Il faudra lancer l'IA dans un thread séparé avec asyncio pour ne pas bloquer le serveur.
