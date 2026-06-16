@@ -181,3 +181,9 @@ class Board:
         
         return "draw"
         
+    def copy(self):
+        board = Board(self.screen)
+        board.dalles = self.dalles.copy()
+        board.white_pawns = self.white_pawns.copy()
+        board.black_pawns = self.black_pawns.copy()
+        return board

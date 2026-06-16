@@ -79,7 +79,7 @@ class Main:
 
     def update(self):
         if self.current_player and self.current_player.IA:
-            self.previous_move, self.previous_stack = self.current_player.take_action()
+            self.previous_move, self.previous_stack = self.current_player.take_action(self.board)
             self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
 
     def display(self):
