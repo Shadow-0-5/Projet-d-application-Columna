@@ -42,9 +42,13 @@ class Player:
         self.IA = IA
         self.color = color
 
+        self.is_calculating = False
+        self.action = None
+
     def take_action(self, board):
-        _, action = self.tour_max(board, -10000, 10000, PROFONDEUR)
-        return action
+        _, self.action = self.tour_max(board, -10000, 10000, PROFONDEUR)
+        self.is_calculating = False
+        
     
 
     def tour_max(self, board : Board, alpha, beta, profondeur):
@@ -65,7 +69,7 @@ class Player:
                 vvboard = vboard.copy()
                 vvboard.move(stack[0], stack[1])
                 u_min, _ = self.tour_min(vvboard, alpha, beta, profondeur-1)
-                if not u or u_min > u:
+                if u == None or u_min > u:
                     a = (move, stack)
                     u = u_min
                 if u >= beta:
@@ -92,7 +96,7 @@ class Player:
                 vvboard = vboard.copy()
                 vvboard.move(stack[0], stack[1])
                 u_max, _ = self.tour_max(vvboard, alpha, beta, profondeur-1)
-                if not u or u_max < u:
+                if u == None or u_max < u:
                     a = (move, stack)
                     u = u_max
                 if u <= alpha:
@@ -160,261 +164,4 @@ class Player:
                     file.append(voisin)
         
         return cpt
-
-    
-
-    # Fonction CalculerMobilite(PositionPion)
-    # File = [PositionPion]
-    # Visites = Ensemble vide
-    # CompteurMobilite = 0
-
-    # Tant que File n'est pas vide:
-    #     CaseActuelle = File.retirerPremier()
-    #     Si CaseActuelle n'est pas dans Visites:
-    #         Visites.ajouter(CaseActuelle)
-    #         CompteurMobilite += 1
-            
-    #         Pour chaque Voisin de CaseActuelle:
-    #             Si Voisin est marchable ET non bloqué par un autre pion:
-    #                 File.ajouter(Voisin)
-                    
-    # Retourner CompteurMobilite
-
-
-
-
-
-
-    # def evaluate_position(self, board : Board):
-    #     score = 0
-    #     tour5 = []
-    #     tour4 = []
-    #     tour3 = []
-    #     tour2 = []
-
-    #     factor = 1 if self.color == "white" else -1
-
-    #     for y in range(6):
-    #         for x in range(6):
-    #             if board.dalles[y][x] == 5 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-    #                 tour5.append((y, x))
-    #             elif board.dalles[y][x] == 4 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-    #                 tour4.append((y, x))
-    #             elif board.dalles[y][x] == 3 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-    #                 tour3.append((y, x))
-    #             elif board.dalles[y][x] == 2 and (y, x) not in board.black_pawns and (y, x) not in board.white_pawns:
-    #                 tour2.append((y, x))
-    #     for liste in [board.white_pawns, board.black_pawns]:
-    #         for pawn in liste:
-    #             if board.dalles[pawn[0]][pawn[1]] == 5:
-    #                 score += factor * POINTS_T5_D0
-
-    #             elif board.dalles[pawn[0]][pawn[1]] == 4:
-    #                 score += factor * POINTS_T4_D0
-    #                 dist_min = None
-    #                 for tour in tour5:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist_min or dist < dist_min):
-    #                         dist_min = dist
-    #                 if dist_min == 1:
-    #                     score += factor * POINTS_T5_D1
-    #                 elif dist_min == 2:
-    #                     score += factor * POINTS_T5_D2
-    #                 elif dist_min == 3:
-    #                     score += factor * POINTS_T5_D3
-                
-    #             elif board.dalles[pawn[0]][pawn[1]] == 3:
-    #                 score += factor * POINTS_T3_D0
-    #                 dist5_min = None
-    #                 dist4_min = None
-    #                 for tour in tour5:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist5_min or dist < dist5_min):
-    #                         dist5_min = dist
-    #                 for tour in tour4:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist4_min or dist < dist4_min):
-    #                         dist4_min = dist
-    #                 if dist5_min == 1:
-    #                     score += factor * POINTS_T5_D1
-    #                 elif dist5_min == 2:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T5_D2, POINTS_T4_D1)
-    #                     else:
-    #                         score += factor * POINTS_T5_D2
-    #                 elif dist5_min == 3:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T4_D1, POINTS_T5_D3)
-    #                     elif dist4_min == 2:
-    #                         score += factor * max(POINTS_T4_D2, POINTS_T5_D3)
-    #                     else:
-    #                         score += factor * POINTS_T5_D3
-    #                 else:
-    #                     if dist4_min == 1:
-    #                         score += factor * POINTS_T4_D1
-    #                     elif dist4_min == 2:
-    #                         score += factor * POINTS_T4_D2
-    #                     elif dist4_min == 3:
-    #                         score += factor * POINTS_T4_D3
-                
-    #             elif board.dalles[pawn[0]][pawn[1]] == 2:
-    #                 score += factor * POINTS_T2_D0
-    #                 dist5_min = None
-    #                 dist4_min = None
-    #                 dist3_min = None
-    #                 for tour in tour5:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist5_min or dist < dist5_min):
-    #                         dist5_min = dist
-    #                 for tour in tour4:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist4_min or dist < dist4_min):
-    #                         dist4_min = dist
-    #                 for tour in tour3:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist3_min or dist < dist3_min):
-    #                         dist3_min = dist
-
-    #                 if dist5_min == 1:
-    #                     score += factor * POINTS_T5_D1
-    #                 elif dist5_min == 2:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T5_D2, POINTS_T4_D1)
-    #                     else:
-    #                         score += factor * POINTS_T5_D2
-    #                 elif dist5_min == 3:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T4_D1, POINTS_T5_D3)
-    #                     elif dist4_min == 2:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D2, POINTS_T5_D3)
-    #                         else:
-    #                             score += factor * max(POINTS_T4_D2, POINTS_T5_D3)
-    #                     else:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T5_D3)
-    #                         else:
-    #                             score += factor * POINTS_T5_D3
-    #                 else:
-    #                     if dist4_min == 1:
-    #                         score += factor * POINTS_T4_D1
-    #                     elif dist4_min == 2:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D2)
-    #                         else:
-    #                             score += factor * POINTS_T4_D2
-    #                     elif dist4_min == 3:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D3)
-    #                         elif dist3_min == 2:
-    #                             score += factor * max(POINTS_T3_D2, POINTS_T4_D3)
-    #                         else:
-    #                             score += factor * POINTS_T4_D3
-    #                     else:
-    #                         if dist3_min == 1:
-    #                             score += factor * POINTS_T3_D1
-    #                         elif dist3_min == 2:
-    #                             score += factor * POINTS_T3_D2
-    #                         elif dist3_min == 3:
-    #                             score += factor * POINTS_T3_D3
-                
-    #             elif board.dalles[pawn[0]][pawn[1]] == 1:
-    #                 dist5_min = None
-    #                 dist4_min = None
-    #                 dist3_min = None
-    #                 dist2_min = None
-    #                 for tour in tour5:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist5_min or dist < dist5_min):
-    #                         dist5_min = dist
-    #                 for tour in tour4:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist4_min or dist < dist4_min):
-    #                         dist4_min = dist
-    #                 for tour in tour3:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist3_min or dist < dist3_min):
-    #                         dist3_min = dist
-    #                 for tour in tour2:
-    #                     dist = board.A_Star(pawn, tour)
-    #                     if dist > 0 and (not dist2_min or dist < dist2_min):
-    #                         dist2_min = dist
-
-    #                 if dist5_min == 1:
-    #                     score += factor * POINTS_T5_D1
-    #                 elif dist5_min == 2:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T5_D2, POINTS_T4_D1)
-    #                     else:
-    #                         score += factor * POINTS_T5_D2
-    #                 elif dist5_min == 3:
-    #                     if dist4_min == 1:
-    #                         score += factor * max(POINTS_T4_D1, POINTS_T5_D3)
-    #                     elif dist4_min == 2:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D2, POINTS_T5_D3)
-    #                         else:
-    #                             score += factor * max(POINTS_T4_D2, POINTS_T5_D3)
-    #                     else:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T5_D3)
-    #                         elif dist3_min == 2:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T2_D1, POINTS_T3_D2, POINTS_T5_D3)
-    #                             else:
-    #                                 score += factor * max(POINTS_T3_D2, POINTS_T5_D3)
-    #                         else:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T2_D1, POINTS_T5_D3)
-    #                             elif dist2_min == 2:
-    #                                 score += factor * max(POINTS_T2_D2, POINTS_T5_D3)
-    #                             else:
-    #                                 score += factor * POINTS_T5_D3
-    #                 else:
-    #                     if dist4_min == 1:
-    #                         score += factor * POINTS_T4_D1
-    #                     elif dist4_min == 2:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D2)
-    #                         else:
-    #                             score += factor * POINTS_T4_D2
-    #                     elif dist4_min == 3:
-    #                         if dist3_min == 1:
-    #                             score += factor * max(POINTS_T3_D1, POINTS_T4_D2)
-    #                         elif dist3_min == 2:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T2_D1, POINTS_T3_D2, POINTS_T4_D3)
-    #                             else:
-    #                                 score += factor * max(POINTS_T3_D2, POINTS_T4_D3)
-    #                         else:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T2_D1, POINTS_T4_D3)
-    #                             elif dist2_min == 2:
-    #                                 score += factor * max(POINTS_T2_D2, POINTS_T4_D3)
-    #                             else:
-    #                                 score += factor * POINTS_T4_D2
-    #                     else:
-    #                         if dist3_min == 1:
-    #                             score += factor * POINTS_T3_D1
-    #                         elif dist3_min == 2:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T3_D2, POINTS_T2_D1)
-    #                             else:
-    #                                 score += factor * POINTS_T3_D2
-    #                         elif dist3_min == 3:
-    #                             if dist2_min == 1:
-    #                                 score += factor * max(POINTS_T3_D3, POINTS_T2_D1)
-    #                             elif dist2_min == 2:
-    #                                 score += factor * max(POINTS_T3_D3, POINTS_T2_D2)
-    #                             else:
-    #                                 score += factor * POINTS_T3_D3
-    #                         else:
-    #                             if dist2_min == 1:
-    #                                 score += factor * POINTS_T2_D1
-    #                             elif dist2_min == 2:
-    #                                 score += factor * POINTS_T2_D2
-    #                             elif dist2_min == 3:
-    #                                 score += factor * POINTS_T2_D3
-    #         factor *= -1
-    #     return score
 
