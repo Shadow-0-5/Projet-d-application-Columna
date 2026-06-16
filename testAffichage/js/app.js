@@ -1,3 +1,29 @@
+// ========== WEBSOCKET & RÉSEAU ==========
+// 1. On récupère l'ID de la partie dans l'URL (ex: ?room=A8F3K)
+const urlParams = new URLSearchParams(window.location.search);
+const roomID = urlParams.get('room');
+
+// Si quelqu'un arrive sur la page sans ID, on le renvoie à l'accueil
+if (!roomID) {
+    alert("Aucune partie trouvée. Retour à l'accueil.");
+    window.location.href = "acceuil.html";
+}
+
+// 2. On ouvre la connexion vers le serveur Python
+const socket = new WebSocket(`ws://localhost:8000/ws/${roomID}`);
+
+socket.onopen = function() {
+    console.log(`Connecté au serveur Python sur le salon : ${roomID}`);
+};
+
+socket.onmessage = function(event) {
+    // Phase 2 : Afficher la réponse du serveur
+    console.log("Le serveur Python répond :", event.data);
+};
+
+
+
+// ... (la suite de ton app.js ne bouge pas pour l'instant)
 // ========== ÉTAT DU JEU ==========
 const BOARD_SIZE = 6;
 const MAX_PILE = 5;
@@ -203,12 +229,24 @@ function selectPion(r, c) {
 }
 
 function movePion(fr, fc, tr, tc) {
+  // 1. On prépare le message JSON pour le serveur
+  const message = {
+      action: "move",
+      from: [fr, fc],
+      to: [tr, tc]
+  };
+  
+  // 2. On l'envoie via WebSocket (transformé en texte JSON)
+  if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(message));
+  }
+
+  // --- Le reste de ton code local existant ---
   board[tr][tc].pion = board[fr][fc].pion;
   board[fr][fc].pion = null;
   selectedCell = null;
   phase = 'stack';
 
-  // Si la phase stack est impossible, la partie s'arrête
   if (!canCurrentPlayerStack()) {
     endGame();
     return;
@@ -222,8 +260,20 @@ function selectStack(r, c) {
 }
 
 function stackTiles(fr, fc, tr, tc) {
+  // 1. On informe le serveur de l'empilement
+  const message = {
+      action: "stack",
+      from: [fr, fc],
+      to: [tr, tc]
+  };
+  
+  if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(message));
+  }
+
+  // --- Le reste de ton code existant ---
   board[tr][tc].height += board[fr][fc].height;
-  board[fr][fc].height = null; // case vide
+  board[fr][fc].height = null; 
   board[fr][fc].pion = null;
   selectedCell = null;
   nextTurn();
