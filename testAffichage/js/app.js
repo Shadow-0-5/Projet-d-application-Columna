@@ -1,4 +1,5 @@
 // ========== WEBSOCKET & RÉSEAU ==========
+let myRole = null; // Stockera 'white', 'black', ou 'spectator'
 // 1. On récupère l'ID de la partie dans l'URL (ex: ?room=A8F3K)
 const urlParams = new URLSearchParams(window.location.search);
 const roomID = urlParams.get('room');
@@ -22,7 +23,14 @@ socket.onmessage = function(event) {
     console.log("Mise à jour reçue du serveur :", response);
 
     if (response.status === "sync" || response.status === "update") {
+        if (response.role) {
+            myRole = response.role;
+            alert("Vous jouez les : " + (myRole === 'white' ? 'Blancs' : 'Noirs'));
+        }
         const serverState = response.state;
+        currentPlayer = serverState.turn;
+        phase = serverState.phase;
+        selectedCell = null;
         
         // 1. On met à jour les dalles
         for (let r = 0; r < BOARD_SIZE; r++) {
@@ -190,6 +198,9 @@ function render() {
 }
 
 function applyInteractions(el, r, c, cell) {
+  if (myRole !== currentPlayer || gameOver) {
+      return; 
+  }
   if (phase === 'move') {
     if (selectedCell === null) {
       // Sélectionner un pion du joueur courant
