@@ -406,6 +406,63 @@ badgeElement.addEventListener("mouseleave", () => {
   tooltipElement.classList.remove("show");
 });
 
+function abandonnerPartie() {
+  const modalAbandon = document.getElementById("abandon-modal");
+  if (modalAbandon) {
+    modalAbandon.classList.add("show");
+    console.log("[Front-End] Ouverture du modal de confirmation d'abandon.");
+  }
+}
+
+function fermerModalAbandon() {
+  const modalAbandon = document.getElementById("abandon-modal");
+  if (modalAbandon) {
+    modalAbandon.classList.remove("show");
+    console.log("[Front-End] Abandon annulé. Retour au jeu.");
+  }
+}
+
+function confirmerAbandonNetwork() {
+  console.log("[Front-End] Abandon confirmé par le joueur.");
+
+  // On ferme d'abord le modal de confirmation d'abandon
+  fermerModalAbandon();
+
+  // ENV_NETWORK POUR TON POTE (BACK-END)
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    const payloadAbandon = {
+      action: "abandon",
+      pseudo: MY_PSEUDO,
+      role: myRole,
+    };
+    socket.send(JSON.stringify(payloadAbandon));
+    console.log("[Back-End Info] Payload envoyé au serveur :", payloadAbandon);
+    socket.close();
+  } else {
+    console.warn("[Back-End Info] WebSocket non connecté.");
+  }
+
+  // INTERFACE : ON AFFICHE LE MODAL DE FIN DE PARTIE DIRECTEMENT ICI
+  const endModal = document.getElementById("end-modal");
+  const modalTitle = document.getElementById("modal-title");
+  const modalBody = document.getElementById("modal-body");
+
+  if (endModal && modalTitle && modalBody) {
+    // On injecte dynamiquement les textes dans ton modal existant
+    modalTitle.innerText = "Partie terminée";
+    modalBody.innerHTML =
+      "Vous avez abandonné la partie.<br><strong>Défaite collective.</strong>";
+
+    // C'est cette ligne magique qui active le CSS pour afficher la boîte
+    endModal.classList.add("show");
+    console.log("[Front-End] Modal de fin de partie affiché avec succès.");
+  } else {
+    console.error(
+      "[Front-End Error] Impossible de trouver les ID du modal de fin dans le HTML.",
+    );
+  }
+}
+
 // ========== FIN DE PARTIE ==========
 
 function computeScore(color) {
@@ -478,8 +535,7 @@ function updateStatusBar() {
   } else if (myRole !== currentPlayer) {
     title.textContent = "En attente de l'adversaire";
     desc.textContent = "Votre adversaire est en train de réfléchir";
-  }
-    else if (phase === "move") {
+  } else if (phase === "move") {
     title.textContent = "Action 1 : Déplacer un pion";
     desc.textContent = "Cliquez sur un de vos pions, puis sa destination";
   } else {

@@ -83,6 +83,16 @@
   <button class="btn danger" id="btn-abandon" onclick="abandonnerPartie()">Abandonner</button>
 </div>
 
+<div class="modal-overlay" id="abandon-modal">
+  <div class="modal">
+    <h2>Abandonner ?</h2>
+    <p>Êtes-vous sûr de vouloir abandonner ?<br> Un abandon entraîne une défaite immédiate.</p>
+    <div style="display: flex; gap: 15px; margin-top: 10px;">
+      <button class="btn" onclick="fermerModalAbandon()">Annuler</button>
+      <button class="btn danger" onclick="confirmerAbandonNetwork()">Abandonner</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal fin de partie -->
 <div class="modal-overlay" id="end-modal">
