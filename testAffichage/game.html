@@ -7,25 +7,29 @@
 <title>Columna</title>
 </head>
 <body>
-<h1>COLUMNA</h1>
-<p class="subtitle">ID pour rejoindre la partie : <strong id="room-display">Chargement...</strong></p>
+<div class="game-header">
 
-<div class="status-bar">
-  <div class="player-indicator" id="current-player-indicator">
-    <div class="pion-dot" id="current-pion-dot"></div>
-    <span class="player-name" id="current-player-name"></span>
+  <h1 class="mini-title">COLUMNA</h1>
+
+  <div class="status-bar">
+    <div class="player-indicator" id="current-player-indicator">
+      <div class="pion-dot" id="current-pion-dot"></div>
+      <span class="player-name" id="current-player-name"></span>
+    </div>
+    <div class="phase-label">
+      <strong id="phase-title"></strong>
+      <span id="phase-desc"></span>
+    </div>
   </div>
-  <div class="phase-label">
-    <strong id="phase-title"></strong>
-    <span id="phase-desc"></span>
+
+  <div class="room-badge">
+    ID : <strong id="room-display">Chargement...</strong>
   </div>
+
 </div>
 
-<div class="board-wrap">
-  <div class="board" id="board"></div>
-</div>
+<div class="jeu-container">
 
-<div class="score-panel" id="score-panel">
   <div class="score-card" id="score-white">
     <div class="score-card-header">
       <div class="pion-dot white"></div>
@@ -33,6 +37,11 @@
     </div>
     <div class="score-breakdown" id="score-breakdown-white"></div>
   </div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
   <div class="score-card" id="score-black">
     <div class="score-card-header">
       <div class="pion-dot black"></div>
@@ -40,6 +49,7 @@
     </div>
     <div class="score-breakdown" id="score-breakdown-black"></div>
   </div>
+
 </div>
 
 <div class="actions">
