@@ -484,12 +484,10 @@ function endGame() {
   for (let h = MAX_PILE; h >= 1; h--) {
     if (ws[h] > bs[h]) {
       winner = "white";
-      reason = `Plus de pions sur les piles de ${h}`;
       break;
     }
     if (bs[h] > ws[h]) {
       winner = "black";
-      reason = `Plus de pions sur les piles de ${h}`;
       break;
     }
   }
@@ -500,8 +498,10 @@ function endGame() {
   }
 
   render();
-  const wName = winner === "white" ? "Blancs" : "Noirs";
-  document.getElementById("modal-title").textContent = `${wName} gagnent !`;
+  let title = "";
+  if (winner === myRole) {title = "Victoire";}
+  else {title = "Défaite";}
+  document.getElementById("modal-title").textContent = title;
   document.getElementById("modal-body").innerHTML =
     `<strong>${reason}</strong><br><br>` +
     `Blancs : ${
@@ -564,6 +564,13 @@ function updateScores() {
       "active-player",
       color === currentPlayer && !gameOver,
     );
+  }
+}
+
+function closeEndModal() {
+  const endModal = document.getElementById("end-modal");
+  if (endModal) {
+    endModal.classList.remove("show");
   }
 }
 
