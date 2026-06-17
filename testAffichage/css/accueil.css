@@ -295,6 +295,61 @@ details p { margin-top: 8px; color: var(--text); }
 details ol { padding-left: 18px; margin-top: 4px; }
 details li { margin-bottom: 4px; }
 
+/* Bandeau d'état sur le serveur */
+.server-banner {
+  width: 100%;
+  max-width: 580px;
+  max-height: 100px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: opacity 0.5s ease, max-height 0.5s ease, margin 0.5s ease, visibility 0.5s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.server-banner.waiting {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+}
+
+.server-banner.connected {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.server-banner .spinner {
+  display: inline-block;
+  animation: rotation 2s infinite linear;
+}
+
+.server-banner.hidden-soft {
+  opacity: 0;
+  visibility: hidden;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 @media (max-width: 650px) {
   body {
     overflow-x: auto;
