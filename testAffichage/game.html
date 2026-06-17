@@ -8,7 +8,7 @@
 </head>
 <body>
 <h1>COLUMNA</h1>
-<p class="subtitle">2 joueurs · Stratégie · 6×6</p>
+<p class="subtitle">ID pour rejoindre la partie : <strong id="room-display">Chargement...</strong></p>
 
 <div class="status-bar">
   <div class="player-indicator" id="current-player-indicator">
@@ -44,18 +44,19 @@
 
 <div class="actions">
   <button class="btn" id="btn-cancel" onclick="cancelSelection()">Annuler sélection</button>
-  <button class="btn danger" onclick="restartGame()">Nouvelle partie</button>
+  <button class="btn" id="btn-home" onclick="window.location.href='accueil.html'">Accueil</button>
+  <button class="btn danger" id="btn-abandon" onclick="abandonnerPartie()">Abandonner</button>
 </div>
 
 <details>
   <summary>Règles du jeu</summary>
-  <p><strong>But :</strong> Avoir le plus de pions sur les piles les plus hautes en fin de partie.</p>
-  <p><strong>Chaque tour (2 actions dans l'ordre) :</strong></p>
+  <p><strong>But du jeu :</strong> Avoir le plus de pions sur les piles les plus hautes en fin de partie.</p>
+  <p><strong>Chaque tour, le joueur doit effectuer 2 actions obligatoires dans cet ordre :</strong></p>
   <ol>
-    <li><strong>Déplacer un pion</strong> : vers la première pile occupée en face dans une direction orthogonale (pas de case vide, pas de case occupée par un autre pion).</li>
-    <li><strong>Empiler des dalles</strong> : choisir une pile sans pion, l'empiler sur la première pile sans pion rencontrée dans une direction orthogonale. Maximum 5 dalles par pile. La case de départ devient vide.</li>
+    <li><strong>Déplacer un pion</strong> : Un des quatre pions doit être déplacé vers la première pile vide en face dans une direction orthogonale (pas de case occupée par un autre pion, pas de case vide).</li>
+    <li><strong>Empiler des dalles</strong> : Choisir une pile sans pion, l'empiler sur la première pile sans pion rencontrée dans une direction orthogonale. Maximum 5 dalles par pile. La case de départ devient vide.</li>
   </ol>
-  <p><strong>Fin :</strong> Quand un joueur ne peut plus jouer. Le vainqueur est celui avec le plus de pions sur les piles de 5 dalles, puis 4, puis 3, etc.</p>
+  <p><strong>Fin :</strong> Quand un joueur ne peut plus jouer, c'est à dire qu'une des deux actions obligatoire ne peut pas être effectuée. Le vainqueur est celui avec le plus de pions sur les piles de 5 dalles, puis 4, puis 3, etc.</p>
 </details>
 
 <!-- Modal fin de partie -->
