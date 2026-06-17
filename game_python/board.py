@@ -91,8 +91,17 @@ class Board:
             self.black_pawns.remove(begin)
             self.black_pawns.append(end)
         else:
-            self.dalles[end[0]][end[1]] += self.dalles[begin[0]][begin[1]]
+            nb_dalles = self.dalles[begin[0]][begin[1]]
+            self.dalles[end[0]][end[1]] += nb_dalles
             self.dalles[begin[0]][begin[1]] = 0
+            return nb_dalles
+        
+    def undo_move(self, begin, end, nb_dalles = None):
+        if not nb_dalles:
+            self.move(end, begin)
+        else:
+            self.dalles[end[0]][end[1]] -= nb_dalles
+            self.dalles[begin[0]][begin[1]] = nb_dalles
 
     def get_all_pawns_move(self, color):
         all_moves = []
@@ -105,10 +114,38 @@ class Board:
         """renvoie tous les mouvements possibles pour un pion (= une position)"""
         all_move_one_pawn = []
         for i in range(coords[1]+1, 6):
+            for e in self.get_one_pawn_move(color, coords):
+                all_moves.append(e)
+        return all_moves
+    
+    def get_one_pawn_move(self, color, coords:tuple):
+        """renvoie tous les mouvements possibles pour un pion (= une position)"""
+        all_move_one_pawn = []
+        for i in range(coords[1]+1, 6):
                 if self.dalles[coords[0]][i] != 0:
                     if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
                         all_move_one_pawn.append((coords, (coords[0], i)))
+                        all_move_one_pawn.append((coords, (coords[0], i)))
                     break
+        # deplacement a gauche
+        for i in range(coords[1]-1, -1, -1):
+            if self.dalles[coords[0]][i] != 0:
+                if (coords[0], i) not in self.white_pawns and (coords[0], i) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (coords[0], i)))
+                break
+        # deplacement en bas
+        for i in range(coords[0]+1, 6):
+            if self.dalles[i][coords[1]] != 0:
+                if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (i, coords[1])))
+                break
+        # deplacement en haut
+        for i in range(coords[0]-1, -1, -1):
+            if self.dalles[i][coords[1]] != 0:
+                if (i, coords[1]) not in self.white_pawns and (i, coords[1]) not in self.black_pawns:
+                    all_move_one_pawn.append((coords, (i, coords[1])))
+                break
+        return all_move_one_pawn
         # deplacement a gauche
         for i in range(coords[1]-1, -1, -1):
             if self.dalles[coords[0]][i] != 0:
@@ -134,6 +171,7 @@ class Board:
         all_moves = []
         for y in range(6):
             for x in range(6):
+                if self.dalles[y][x] == 0 or (y, x) in self.white_pawns or (y,x) in self.black_pawns: continue
                 if self.dalles[y][x] == 0 or (y, x) in self.white_pawns or (y,x) in self.black_pawns: continue
                 nb_dalles = self.dalles[y][x]
                 # deplacement a doite
@@ -167,10 +205,13 @@ class Board:
         current_black_stack = 0
 
         for i in range(5,2, -1):
+        for i in range(5,2, -1):
             for white_position in self.white_pawns:
+                if self.dalles[white_position[0]][white_position[1]] == i: 
                 if self.dalles[white_position[0]][white_position[1]] == i: 
                     current_white_stack += 1 
             for black_position in self.black_pawns:
+                if self.dalles[black_position[0]][black_position[1]] == i: 
                 if self.dalles[black_position[0]][black_position[1]] == i: 
                     current_black_stack += 1
 
@@ -187,7 +228,6 @@ class Board:
         
     def copy(self):
         board = Board(None)
-        board.dalles = []
         for l in self.dalles:
             board.dalles.append(l.copy())
         board.white_pawns = self.white_pawns.copy()
@@ -259,6 +299,8 @@ class Board:
                 open_list.append((nouveau_f, nouveau_g, voisin, path + [voisin]))
         
         return -1
+    
+
 
 # if __name__ == "__main__":
 #     import pygame

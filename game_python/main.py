@@ -2,6 +2,7 @@
 
 # Gère la fenetre pygame + evenements (clic -> vers case choisie)
 
+import threading
 import random
 import pygame
 
@@ -38,8 +39,7 @@ class Main:
             if event.type == pygame.QUIT:
                 self.launched = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.current_player and not self.current_player.IA:
-                    self.handle_click(*(pygame.mouse.get_pos()))
+                self.handle_click(*(pygame.mouse.get_pos()))
 
 
     def handle_click(self, x, y):
@@ -79,18 +79,25 @@ class Main:
 
     def update(self):
         if self.current_player and self.current_player.IA:
-            self.previous_move, self.previous_stack = self.current_player.take_action(self.board)
-            self.board.move(self.previous_move[0], self.previous_move[1])
-            self.all_moves_possible = self.board.get_all_slabs_stack()
-            if not self.all_moves_possible:
-                print(self.board.get_result())
-                self.current_player = None
-            self.board.move(self.previous_stack[0], self.previous_stack[1])
-            self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
-            if not self.all_moves_possible:
-                print(self.board.get_result())
-                self.current_player = None
-            self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
+            if not self.current_player.is_calculating:
+                if self.current_player.action:
+                    self.previous_move, self.previous_stack = self.current_player.action
+                    self.board.move(self.previous_move[0], self.previous_move[1])
+                    self.all_moves_possible = self.board.get_all_slabs_stack()
+                    if not self.all_moves_possible:
+                        print(self.board.get_result())
+                        self.current_player = None
+                    self.board.move(self.previous_stack[0], self.previous_stack[1])
+                    self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
+                    if not self.all_moves_possible:
+                        print(self.board.get_result())
+                        self.current_player = None
+                    self.current_player.action = None
+                    self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
+                else:
+                    self.current_player.is_calculating = True
+                    thread_bot = threading.Thread(target=self.current_player.take_action, args=(self.board,))
+                    thread_bot.start()
 
     def display(self):
         self.screen.fill("black")
@@ -105,7 +112,7 @@ class Main:
         if self.previous_move:
             pygame.draw.line(self.screen, (0,50,200), (self.previous_move[0][1]*100+60, self.previous_move[0][0]*100+60), (self.previous_move[1][1]*100+60, self.previous_move[1][0]*100+60), 3)
         if self.previous_stack:
-            pygame.draw.line(self.screen, (0,50,200), (self.previous_stack[0][1]*100+60, self.previous_stack[0][0]*100+60), (self.previous_stack[1][1]*100+60, self.previous_stack[1][0]*100+60), 3)
+            pygame.draw.line(self.screen, (200,50,0), (self.previous_stack[0][1]*100+60, self.previous_stack[0][0]*100+60), (self.previous_stack[1][1]*100+60, self.previous_stack[1][0]*100+60), 3)
         
         pygame.display.flip()
 
@@ -115,6 +122,7 @@ class Main:
             self.update()
             self.handle_events()
             self.display()
+            self.update()
             self.clock.tick(60)
 
 
