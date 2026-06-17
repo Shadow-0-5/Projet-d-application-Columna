@@ -18,18 +18,20 @@
 }
 
 body {
-font-family: "Jim Nightshade", cursive;
-margin: 0;
-padding: 20px;
-background-image: url("../../img/bamboo.jpg");
-background-size: cover;
-background-attachment: fixed;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-user-select: none;
-color: var(--text);
+    font-family: "Jim Nightshade", cursive;
+    margin: 0;
+    padding: 20px;
+    background-image: url("../../img/bamboo.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+    color: var(--text);
+    overflow: hidden;
 }
 
 h1 {
@@ -54,21 +56,30 @@ max-width: 580px;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     margin-bottom: 20px;
     gap: 15px;
+    height: 60px;
+}
+
+.mini-title-container {
+    width: 250px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .mini-title {
-    font-size: 2.2rem !important;
+    font-size: 3rem !important;
     background-color: blanchedalmond;
+    font-weight: 700 !important;
     border-radius: 8px;
     padding: 4px 15px !important;
     color: var(--gold);
-    font-weight: 400;
     letter-spacing: 0.05em;
     width: auto !important;
-    margin: 0 !important;
+    white-space: nowrap;
+    margin-left: -30px !important;
 }
 
 .status-bar {
@@ -93,7 +104,6 @@ max-width: 580px;
     color: var(--text);
     border: 1px solid var(--border);
     white-space: nowrap;
-
     width: 160px;
     text-align: center;
 }
@@ -343,6 +353,7 @@ gap: 10px;
 margin-bottom: 14px;
 width: 100%;
 max-width: 580px;
+margin-top: 10px;
 }
 .btn {
 flex: 1;
@@ -362,18 +373,6 @@ box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 .btn.danger:hover { background: rgba(255,220,200,0.9); border-color: #c83030; color: #8a1010; }
 
 /* RULES */
-details {
-width: 100%;
-max-width: 580px;
-background: var(--surface);
-border: 1px solid var(--border);
-border-radius: 10px;
-padding: 12px 16px;
-font-size: 1rem;
-line-height: 1.6;
-color: var(--text-dim);
-box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
 summary {
 cursor: pointer;
 color: var(--gold);
@@ -429,18 +428,47 @@ font-family: sans-serif;
 .jeu-container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    gap: 30px;
+    gap: 40px;
     width: 100%;
-    max-width: 1000px;
-    margin-bottom: 0px;
+    max-width: 1200px;
+    margin-bottom: -10px;
+}
+
+.side-panel-scores {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-self: center;
+    width: 360px;
+    flex-shrink: 0;
 }
 
 .score-card {
-    min-width: 250px !important;
-    max-width: 280px !important;
+    width: 260px;
+    margin-right: auto;
+}
+
+.side-panel-rules {
+    align-self: flex-start;
+    width: 360px;
+    flex-shrink: 0;
+    margin-left: 20px;
+}
+
+details {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
     padding: 12px 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    display: block;
 }
 
 .score-breakdown {
@@ -455,6 +483,8 @@ font-family: sans-serif;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    width: 250px;
+    flex-shrink: 0;
 }
 
 .tooltip-id {
@@ -483,4 +513,20 @@ font-family: sans-serif;
 .room-badge:hover {
     background-color: #fbeed2 !important;
     border-color: var(--gold) !important;
+}
+
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+@media (max-height: 700px) {
+    body {
+        overflow-y: auto;
+    }
+}
+@media (max-width: 1250px) {
+    body {
+        overflow-x: auto;
+    }
 }

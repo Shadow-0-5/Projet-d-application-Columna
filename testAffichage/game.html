@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/columnacss.css"> 
 <title>Columna</title>
+<link rel="icon" type="image/png" href="../img/columna.svg">
 </head>
 <body>
 <div class="game-header">
 
-  <h1 class="mini-title">COLUMNA</h1>
+  <div class="mini-title-container">
+    <h1 class="mini-title">COLUMNA</h1>
+  </div>
 
   <div class="status-bar">
     <div class="player-indicator" id="current-player-indicator">
@@ -33,44 +36,53 @@
 
 <div class="jeu-container">
 
-  <div class="score-card" id="score-white">
-    <div class="score-card-header">
-      <div class="pion-dot white"></div>
-      <span class="score-card-name">Blancs</span>
+  <div class="side-panel-scores">
+
+    <div class="score-card" id="score-white">
+      <div class="score-card-header">
+        <div class="pion-dot white"></div>
+        <span class="score-card-name">Blancs</span>
+      </div>
+      <div class="score-breakdown" id="score-breakdown-white"></div>
     </div>
-    <div class="score-breakdown" id="score-breakdown-white"></div>
+
+    <div class="score-card" id="score-black">
+      <div class="score-card-header">
+        <div class="pion-dot black"></div>
+        <span class="score-card-name">Noirs</span>
+      </div>
+      <div class="score-breakdown" id="score-breakdown-black"></div>
+    </div>
+
   </div>
 
   <div class="board-wrap">
     <div class="board" id="board"></div>
   </div>
 
-  <div class="score-card" id="score-black">
-    <div class="score-card-header">
-      <div class="pion-dot black"></div>
-      <span class="score-card-name">Noirs</span>
-    </div>
-    <div class="score-breakdown" id="score-breakdown-black"></div>
+  <div class="side-panel-rules">
+    <details>
+      <summary>Règles du jeu</summary>
+      <p><strong>But du jeu :</strong> Avoir le plus de pions sur les piles les plus hautes en fin de partie.</p>
+      <p><strong>Chaque tour, le joueur doit effectuer 2 actions obligatoires dans cet ordre :</strong></p>
+      <ol>
+        <li><strong>Déplacer un pion</strong> : Un des quatre pions doit être déplacé vers la première pile vide en face
+          dans une direction orthogonale (pas de case occupée par un autre pion, pas de case vide).</li>
+        <li><strong>Empiler des dalles</strong> : Choisir une pile sans pion, l'empiler sur la première pile sans pion
+          rencontrée dans une direction orthogonale. Maximum 5 dalles par pile. La case de départ devient vide.</li>
+      </ol>
+      <p><strong>Fin :</strong> Quand un joueur ne peut plus jouer, c'est à dire qu'une des deux actions obligatoire ne peut
+        pas être effectuée. Le vainqueur est celui avec le plus de pions sur les piles de 5 dalles, puis 4, puis 3, etc.</p>
+    </details>
   </div>
 
 </div>
-
 <div class="actions">
   <button class="btn" id="btn-cancel" onclick="cancelSelection()">Annuler sélection</button>
   <button class="btn" id="btn-home" onclick="window.location.href='accueil.html'">Accueil</button>
   <button class="btn danger" id="btn-abandon" onclick="abandonnerPartie()">Abandonner</button>
 </div>
 
-<details>
-  <summary>Règles du jeu</summary>
-  <p><strong>But du jeu :</strong> Avoir le plus de pions sur les piles les plus hautes en fin de partie.</p>
-  <p><strong>Chaque tour, le joueur doit effectuer 2 actions obligatoires dans cet ordre :</strong></p>
-  <ol>
-    <li><strong>Déplacer un pion</strong> : Un des quatre pions doit être déplacé vers la première pile vide en face dans une direction orthogonale (pas de case occupée par un autre pion, pas de case vide).</li>
-    <li><strong>Empiler des dalles</strong> : Choisir une pile sans pion, l'empiler sur la première pile sans pion rencontrée dans une direction orthogonale. Maximum 5 dalles par pile. La case de départ devient vide.</li>
-  </ol>
-  <p><strong>Fin :</strong> Quand un joueur ne peut plus jouer, c'est à dire qu'une des deux actions obligatoire ne peut pas être effectuée. Le vainqueur est celui avec le plus de pions sur les piles de 5 dalles, puis 4, puis 3, etc.</p>
-</details>
 
 <!-- Modal fin de partie -->
 <div class="modal-overlay" id="end-modal">

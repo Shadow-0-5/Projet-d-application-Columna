@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/accueil.css"> 
-    <title>Accueil</title>
+    <title>Columna</title>
+    <link rel="icon" type="image/png" href="../img/columna.svg">
 </head>
 <body>
     <h1>COLUMNA</h1>
@@ -16,6 +17,10 @@
         <button class="btn brain" id="btn-rejoindre"><img src="../img/door.png " alt="" class="button_image" ><span>Rejoindre une partie multijoueur</span></button>
         <button class="btn brainn" id="btn-ia"><img src="../img/robot.png " alt="" class="button_image" ><span>Jouer contre l'ordinateur</span></button>
     </section>
+    <section style="margin-top: 2%;">
+        <form onsubmit="return joinRoom(event)"><input id="form-rejoindre" type="hidden"></form>
+    </section>
+    
     <script src="js/accueil.js"></script>
 
     <details open>
