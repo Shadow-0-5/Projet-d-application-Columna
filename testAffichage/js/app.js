@@ -29,10 +29,11 @@ socket.onmessage = function (event) {
     if (response.role) {
       myRole = response.role;
       if (myRole === "white") {
-        document.getElementById("score-card-name-white").innerText += "\t(Vous)";
-      }
-      else {
-        document.getElementById("score-card-name-black").innerText += "\t(Vous)";
+        document.getElementById("score-card-name-white").innerText +=
+          "\t(Vous)";
+      } else {
+        document.getElementById("score-card-name-black").innerText +=
+          "\t(Vous)";
       }
     }
     const serverState = response.state;
@@ -218,7 +219,7 @@ function render() {
         // Pion — décalé selon ombre 3D
         if (cell.pion) {
           const pionEl = document.createElement("div");
-          pionEl.className = `pion ${cell.pion} pion-h${cell.height}`;  
+          pionEl.className = `pion ${cell.pion} pion-h${cell.height}`;
           el.appendChild(pionEl);
         }
 
@@ -410,7 +411,7 @@ function abandonnerPartie() {
   const modalAbandon = document.getElementById("abandon-modal");
   if (modalAbandon) {
     modalAbandon.classList.add("show");
-    console.log("[Front-End] Ouverture du modal de confirmation d'abandon.");
+    //console.log("[Front-End] Ouverture du modal de confirmation d'abandon.");
   }
 }
 
@@ -418,17 +419,16 @@ function fermerModalAbandon() {
   const modalAbandon = document.getElementById("abandon-modal");
   if (modalAbandon) {
     modalAbandon.classList.remove("show");
-    console.log("[Front-End] Abandon annulé. Retour au jeu.");
+    //console.log("[Front-End] Abandon annulé. Retour au jeu.");
   }
 }
 
 function confirmerAbandonNetwork() {
-  console.log("[Front-End] Abandon confirmé par le joueur.");
+  //console.log("[Front-End] Abandon confirmé par le joueur.");
 
-  // On ferme d'abord le modal de confirmation d'abandon
   fermerModalAbandon();
 
-  // ENV_NETWORK POUR TON POTE (BACK-END)
+  // A CHANGER POUR LE SERVEUR ??
   if (socket && socket.readyState === WebSocket.OPEN) {
     const payloadAbandon = {
       action: "abandon",
@@ -436,30 +436,27 @@ function confirmerAbandonNetwork() {
       role: myRole,
     };
     socket.send(JSON.stringify(payloadAbandon));
-    console.log("[Back-End Info] Payload envoyé au serveur :", payloadAbandon);
+    //console.log("[Back-End Info] Payload envoyé au serveur :", payloadAbandon);
     socket.close();
   } else {
-    console.warn("[Back-End Info] WebSocket non connecté.");
+    //console.warn("[Back-End Info] WebSocket non connecté.");
   }
 
-  // INTERFACE : ON AFFICHE LE MODAL DE FIN DE PARTIE DIRECTEMENT ICI
   const endModal = document.getElementById("end-modal");
   const modalTitle = document.getElementById("modal-title");
   const modalBody = document.getElementById("modal-body");
 
   if (endModal && modalTitle && modalBody) {
-    // On injecte dynamiquement les textes dans ton modal existant
     modalTitle.innerText = "Partie terminée";
     modalBody.innerHTML =
-      "Vous avez abandonné la partie.<br><strong>Défaite collective.</strong>";
+      "Vous avez abandonné la partie.<br><strong>Défaite</strong>";
 
-    // C'est cette ligne magique qui active le CSS pour afficher la boîte
     endModal.classList.add("show");
-    console.log("[Front-End] Modal de fin de partie affiché avec succès.");
+    //console.log("[Front-End] Modal de fin de partie affiché avec succès.");
   } else {
-    console.error(
-      "[Front-End Error] Impossible de trouver les ID du modal de fin dans le HTML.",
-    );
+    //console.error(
+    //  "[Front-End Error] Impossible de trouver les ID du modal de fin dans le HTML.",
+    //);
   }
 }
 
