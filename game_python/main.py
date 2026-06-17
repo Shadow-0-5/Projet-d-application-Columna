@@ -21,7 +21,7 @@ class Main:
         self.selected_case = None
 
         self.board = Board(self.screen)
-        self.player_white = Player("white", True)
+        self.player_white = Player("white")
         self.player_black = Player("black", True)
 
         self.current_player = random.choice([self.player_black, self.player_white])
@@ -34,8 +34,6 @@ class Main:
         self.previous_move = None
         self.previous_stack = None
 
-        self.thread_bot = threading.Thread(target=self.current_player.take_action, args=(self.board,))
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,6 +41,7 @@ class Main:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.current_player and not self.current_player.IA:
                     self.handle_click(*(pygame.mouse.get_pos()))
+            
 
 
     def handle_click(self, x, y):
@@ -99,7 +98,8 @@ class Main:
                     self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
                 else:
                     self.current_player.is_calculating = True
-                    self.thread_bot.start()
+                    thread_bot = threading.Thread(target=self.current_player.take_action, args=(self.board,))
+                    thread_bot.start()
 
     def display(self):
         self.screen.fill("black")
@@ -114,7 +114,7 @@ class Main:
         if self.previous_move:
             pygame.draw.line(self.screen, (0,50,200), (self.previous_move[0][1]*100+60, self.previous_move[0][0]*100+60), (self.previous_move[1][1]*100+60, self.previous_move[1][0]*100+60), 3)
         if self.previous_stack:
-            pygame.draw.line(self.screen, (0,50,200), (self.previous_stack[0][1]*100+60, self.previous_stack[0][0]*100+60), (self.previous_stack[1][1]*100+60, self.previous_stack[1][0]*100+60), 3)
+            pygame.draw.line(self.screen, (200,50,0), (self.previous_stack[0][1]*100+60, self.previous_stack[0][0]*100+60), (self.previous_stack[1][1]*100+60, self.previous_stack[1][0]*100+60), 3)
         
         pygame.display.flip()
 

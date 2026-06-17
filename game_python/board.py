@@ -90,8 +90,17 @@ class Board:
             self.black_pawns.remove(begin)
             self.black_pawns.append(end)
         else:
-            self.dalles[end[0]][end[1]] += self.dalles[begin[0]][begin[1]]
+            nb_dalles = self.dalles[begin[0]][begin[1]]
+            self.dalles[end[0]][end[1]] += nb_dalles
             self.dalles[begin[0]][begin[1]] = 0
+            return nb_dalles
+        
+    def undo_move(self, begin, end, nb_dalles = None):
+        if not nb_dalles:
+            self.move(end, begin)
+        else:
+            self.dalles[end[0]][end[1]] -= nb_dalles
+            self.dalles[begin[0]][begin[1]] = nb_dalles
 
     def get_all_pawns_move(self, color):
         all_moves = []

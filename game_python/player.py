@@ -46,7 +46,8 @@ class Player:
         self.action = None
 
     def take_action(self, board):
-        _, self.action = self.tour_max(board, -10000, 10000, PROFONDEUR)
+        board2 = board.copy()
+        _, self.action = self.tour_max(board2, -10000, 10000, PROFONDEUR)
         self.is_calculating = False
         
     
@@ -56,25 +57,38 @@ class Player:
             return (self.eval2(board), None)
 
         all_moves_possible = board.get_all_pawns_move(self.color)
+        len50 = 50/len(all_moves_possible)
         u = None
         a = None
-        i = 0
+        i = -1
         for move in all_moves_possible:
-            i+=1
-            print(f"move {i} / {len(all_moves_possible)}")
-            vboard = board.copy()
-            vboard.move(move[0], move[1])
-            all_stacks_possible = vboard.get_all_slabs_stack()
+            if profondeur == PROFONDEUR:
+                # print(f"move {i} / {len(all_moves_possible)}")
+                i+=1
+            # vboard = board.copy()
+            board.move(move[0], move[1])
+            all_stacks_possible = board.get_all_slabs_stack()
+            j=0
             for stack in all_stacks_possible:
-                vvboard = vboard.copy()
-                vvboard.move(stack[0], stack[1])
-                u_min, _ = self.tour_min(vvboard, alpha, beta, profondeur-1)
+                if profondeur == PROFONDEUR:
+                    percent = round(len50*i + len50 * j / len(all_stacks_possible))
+                    bar = "\r|" 
+                    for _ in range(percent): bar += "=" 
+                    for _ in range(50-percent): bar += " " 
+                    print(bar+"|", end='')
+                    j += 1
+                # vvboard = vboard.copy()
+                nb_dalles = board.move(stack[0], stack[1])
+                u_min, _ = self.tour_min(board, alpha, beta, profondeur-1)
+                board.undo_move(stack[0], stack[1], nb_dalles)
                 if u == None or u_min > u:
                     a = (move, stack)
                     u = u_min
                 if u >= beta:
+                    board.undo_move(move[0], move[1])
                     return (u, a)
                 alpha = max(alpha, u)
+            board.undo_move(move[0], move[1])
         return (u, a)
 
 
@@ -89,19 +103,22 @@ class Player:
         u = None
         a = None
         for move in all_moves_possible:
-            vboard = board.copy()
-            vboard.move(move[0], move[1])
-            all_stacks_possible = vboard.get_all_slabs_stack()
+            # vboard = board.copy()
+            board.move(move[0], move[1])
+            all_stacks_possible = board.get_all_slabs_stack()
             for stack in all_stacks_possible:
-                vvboard = vboard.copy()
-                vvboard.move(stack[0], stack[1])
-                u_max, _ = self.tour_max(vvboard, alpha, beta, profondeur-1)
+                # vvboard = vboard.copy()
+                nb_dalles = board.move(stack[0], stack[1])
+                u_max, _ = self.tour_max(board, alpha, beta, profondeur-1)
+                board.undo_move(stack[0], stack[1], nb_dalles)
                 if u == None or u_max < u:
                     a = (move, stack)
                     u = u_max
                 if u <= alpha:
+                    board.undo_move(move[0], move[1])
                     return (u, a)
                 beta = min(beta, u)
+            board.undo_move(move[0], move[1])
         return (u, a)
 
     def eval2(self, board : Board):
@@ -149,19 +166,25 @@ class Player:
             score = -score
         return score
     
-    def CalculMobility(self, pos, board):
-        file = [pos]
+    def CalculMobility(self, pos, board, gamma = 0.5):
+        file = [(pos, 0)]
         visites = []
-        cpt = 0
+        distances = {}
 
         while file:
-            actual_case = file.pop(0)
-            if actual_case not in visites:
-                visites.append(actual_case)
-                cpt += 1
+            actual_case, distance = file.pop(0)
+            if actual_case[0] not in visites:
+                visites.append(actual_case[0])
+                
+                if distance > 0:
+                    distances[distance] = distances.get(distance, 0) + 1
 
                 for voisin in board.get_voisins(pos):
-                    file.append(voisin)
+                    file.append((voisin, distance+1))
+
+        score = 0
+        for distance, nb_cases in distances.items():
+            score += (gamma ** (distance - 1)) * (np.sqrt(nb_cases))
         
-        return cpt
+        return score
 
