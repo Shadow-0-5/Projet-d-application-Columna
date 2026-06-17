@@ -48,25 +48,19 @@ max-width: 580px;
 
 
 /* STATUS BAR */
-/* ========== NOUVEAU HEADER HORIZONTAL ========== */
-
 .game-header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    /* Écarte les éléments : gauche, milieu, droite */
     width: 100%;
     max-width: 1100px;
-    /* Aligné avec la largeur globale du jeu */
     margin-bottom: 20px;
     gap: 15px;
 }
 
-/* Version miniature du titre pour le coin supérieur gauche */
 .mini-title {
     font-size: 2.2rem !important;
-    /* Beaucoup plus petit que les 80px d'origine */
     background-color: blanchedalmond;
     border-radius: 8px;
     padding: 4px 15px !important;
@@ -74,12 +68,9 @@ max-width: 580px;
     font-weight: 400;
     letter-spacing: 0.05em;
     width: auto !important;
-    /* Ne prend que la place de son texte */
     margin: 0 !important;
-    /* Supprime les marges qui poussent les éléments */
 }
 
-/* Ajustement de la barre de statut pour le milieu */
 .status-bar {
     display: flex;
     align-items: center;
@@ -89,23 +80,22 @@ max-width: 580px;
     border-radius: 10px;
     padding: 6px 14px;
     margin-bottom: 0 !important;
-    /* Aligné horizontalement, plus besoin de marge en bas */
     flex: 1;
-    /* Permet à la barre de prendre l'espace central disponible */
     max-width: 600px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Badge pour l'ID de la partie à droite */
 .room-badge {
     font-size: 1.2rem;
     background-color: blanchedalmond;
     border-radius: 8px;
-    padding: 6px 15px;
+    padding: 6px 0;
     color: var(--text);
     border: 1px solid var(--border);
     white-space: nowrap;
-    /* Empêche l'ID de sauter à la ligne */
+
+    width: 160px;
+    text-align: center;
 }
 
 
@@ -433,4 +423,39 @@ font-family: sans-serif;
     flex-wrap: wrap;
     gap: 6px;
     justify-content: center;
+}
+
+.room-badge-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.tooltip-id {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: #2a2025;
+    color: #f5f0e8;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.tooltip-id.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.room-badge:hover {
+    background-color: #fbeed2 !important;
+    border-color: var(--gold) !important;
 }

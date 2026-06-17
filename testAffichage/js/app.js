@@ -370,6 +370,40 @@ function cancelSelection() {
   render();
 }
 
+function copierID() {
+  if (roomID) {
+    navigator.clipboard
+      .writeText(roomID)
+      .then(() => {
+        // Optionnel : un petit effet visuel pour montrer que c'est copié
+        const badge = document.getElementById("room-badge-click");
+        const originalText = badge.innerHTML;
+        badge.innerHTML = "Copié !";
+        setTimeout(() => {
+          badge.innerHTML = originalText;
+        }, 1500);
+      })
+      .catch((err) => {
+        console.error("Impossible de copier l'ID : ", err);
+      });
+  }
+}
+
+let hoverTimer;
+const badgeElement = document.getElementById("room-badge-click");
+const tooltipElement = document.getElementById("tooltip-message");
+
+badgeElement.addEventListener("mouseenter", () => {
+  hoverTimer = setTimeout(() => {
+    tooltipElement.classList.add("show");
+  }, 1000);
+});
+
+badgeElement.addEventListener("mouseleave", () => {
+  clearTimeout(hoverTimer);
+  tooltipElement.classList.remove("show");
+});
+
 // ========== FIN DE PARTIE ==========
 
 function computeScore(color) {
