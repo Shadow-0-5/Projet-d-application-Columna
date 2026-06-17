@@ -13,7 +13,7 @@ if (!roomID) {
 
 // 2. On ouvre la connexion vers le serveur Python
 const socket = new WebSocket(
-  `ws://${window.location.hostname}:8000/ws/${roomID}?mode=${mode}`,
+  `ws://${window.location.hostname}:8200/ws/${roomID}?mode=${mode}`,
 );
 
 socket.onopen = function () {
@@ -218,10 +218,7 @@ function render() {
         // Pion — décalé selon ombre 3D
         if (cell.pion) {
           const pionEl = document.createElement("div");
-          pionEl.className = `pion ${cell.pion}`;
-          pionEl.style.bottom = cell.height * 2 + 22 + "px";
-          pionEl.style.left = "50%";
-          pionEl.style.transform = "translateX(-50%)";
+          pionEl.className = `pion ${cell.pion} pion-h${cell.height}`;  
           el.appendChild(pionEl);
         }
 
