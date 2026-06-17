@@ -473,7 +473,11 @@ function updateStatusBar() {
   if (gameOver) {
     title.textContent = "Partie terminée";
     desc.textContent = "";
-  } else if (phase === "move") {
+  } else if (myRole !== currentPlayer) {
+    title.textContent = "En attente de l'adversaire";
+    desc.textContent = "Votre adversaire est en train de réfléchir";
+  }
+    else if (phase === "move") {
     title.textContent = "Action 1 : Déplacer un pion";
     desc.textContent = "Cliquez sur un de vos pions, puis sa destination";
   } else {
