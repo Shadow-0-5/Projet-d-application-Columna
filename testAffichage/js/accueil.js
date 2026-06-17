@@ -3,6 +3,33 @@ function generateRoomID() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
+let hideJoinInputTimeout = null;
+const joinInput = document.getElementById("form-rejoindre");
+
+function hideJoinInput() {
+    if (!joinInput.value.trim()) {
+        joinInput.type = 'hidden';
+    }
+}
+
+function resetHideJoinInputTimer() {
+    if (hideJoinInputTimeout) {
+        clearTimeout(hideJoinInputTimeout);
+    }
+    hideJoinInputTimeout = setTimeout(hideJoinInput, 3000);
+}
+
+function joinRoom(event) {
+    if (event) event.preventDefault();
+    const roomID = joinInput.value;
+    console.log(roomID);
+    if (!roomID || !roomID.trim()) {
+        return false;
+    }
+    window.location.href = `game.html?room=${roomID.trim()}`;
+    return false;
+}
+
 // 1. Créer une partie
 document.getElementById("btn-creer").addEventListener("click", function() {
     const roomID = generateRoomID();
@@ -11,11 +38,13 @@ document.getElementById("btn-creer").addEventListener("click", function() {
 
 // 2. Rejoindre une partie
 document.getElementById("btn-rejoindre").addEventListener("click", function() {
-    const roomID = prompt("Entrez l'ID de la partie (ex: A8F3K) :");
-    if (roomID) {
-        window.location.href = `game.html?room=${roomID.trim()}`;
-    }
+    joinInput.type = 'text';
+    joinInput.focus();
+    resetHideJoinInputTimer();
 });
+
+joinInput.addEventListener('input', resetHideJoinInputTimer);
+joinInput.addEventListener('focus', resetHideJoinInputTimer);
 
 // 3. Jouer contre l'IA
 document.getElementById("btn-ia").addEventListener("click", function() {

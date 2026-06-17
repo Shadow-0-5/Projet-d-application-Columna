@@ -232,26 +232,26 @@ pointer-events: none;
 .tile-stack.h2 {
 background-color: rgb(255, 183, 3);
 color: #5c3a21;
-box-shadow: 0 4px 0 #b88102;
-transform: translateY(-4px);
+box-shadow: 0 8px 0 #b88102;
+transform: translateY(-8px);
 }
 .tile-stack.h3 {
 background-color: rgb(251, 133, 0);
 color: white;
-box-shadow: 0 6px 0 #a85900;
-transform: translateY(-6px);
+box-shadow: 0 12px 0 #a85900;
+transform: translateY(-12px);
 }
 .tile-stack.h4 {
 background-color: rgb(232, 93, 4);
 color: white;
-box-shadow: 0 8px 0 #943900;
-transform: translateY(-8px);
+box-shadow: 0 16px 0 #943900;
+transform: translateY(-16px);
 }
 .tile-stack.h5 {
 background-color: rgb(157, 2, 8);
 color: white;
-box-shadow: 0 10px 0 #5c0003;
-transform: translateY(-10px);
+box-shadow: 0 20px 0 #5c0003;
+transform: translateY(-20px);
 }
 
 /* PION */
@@ -264,6 +264,7 @@ border: 2px solid rgba(255,255,255,0.15);
 transition: bottom 0.2s;
 pointer-events: none;
 box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+transform:translate(0%, -65%);
 }
 .pion.white {
 background: radial-gradient(circle at 35% 35%, #ffffff, var(--white-pion) 60%, #c8c0b0);
@@ -274,6 +275,30 @@ background: radial-gradient(circle at 35% 35%, #4a4050, var(--black-pion) 60%, #
 border-color: rgba(255,255,255,0.08);
 }
 
+.pion.white.pion-h2{
+    transform:translate(0%, -100%);
+}
+.pion.white.pion-h3{
+    transform:translate(0%, -115%);
+}
+.pion.white.pion-h4{
+    transform:translate(0%, -130%);
+}
+.pion.white.pion-h5{
+    transform:translate(0%, -135%);
+}
+.pion.black.pion-h2{
+    transform:translate(0%, -100%);
+}
+.pion.black.pion-h3{
+    transform:translate(0%, -115%);
+}
+.pion.black.pion-h4{
+    transform:translate(0%, -130%);
+}
+.pion.black.pion-h5{
+    transform:translate(0%, -135%);
+}
 .score-card {
 flex: 1;
 background: var(--surface);
