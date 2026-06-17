@@ -18,19 +18,20 @@
 }
 
 body {
-font-family: "Jim Nightshade", cursive;
-margin: 0;
-padding: 20px;
-background-image: url("../../img/bamboo.jpg");
-background-size: cover;
-background-attachment: fixed;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-user-select: none;
-color: var(--text);
-overflow-y: hidden;
+    font-family: "Jim Nightshade", cursive;
+    margin: 0;
+    padding: 20px;
+    background-image: url("../../img/bamboo.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+    color: var(--text);
+    overflow: hidden;
 }
 
 h1 {
@@ -327,6 +328,7 @@ gap: 10px;
 margin-bottom: 14px;
 width: 100%;
 max-width: 580px;
+margin-top: 10px;
 }
 .btn {
 flex: 1;
@@ -486,4 +488,20 @@ details {
 .room-badge:hover {
     background-color: #fbeed2 !important;
     border-color: var(--gold) !important;
+}
+
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+@media (max-height: 700px) {
+    body {
+        overflow-y: auto;
+    }
+}
+@media (max-width: 1250px) {
+    body {
+        overflow-x: auto;
+    }
 }
