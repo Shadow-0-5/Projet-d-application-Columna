@@ -39,7 +39,10 @@ class Main:
             if event.type == pygame.QUIT:
                 self.launched = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.handle_click(*(pygame.mouse.get_pos()))
+                if self.current_player and not self.current_player.IA:
+                    self.handle_click(*(pygame.mouse.get_pos()))
+            
+
 
 
     def handle_click(self, x, y):
