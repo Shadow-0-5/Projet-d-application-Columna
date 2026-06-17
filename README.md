@@ -109,6 +109,13 @@ FastAPI lèvera une WebSocketDisconnect exception. Il faut la gérer expliciteme
 **Le tour de l'IA.**  
  L'architecture dit "si c'est au tour de l'IA, on déclenche la fonction IA" — mais si le Minimax est profond, il peut prendre plusieurs secondes. Pendant ce temps le WebSocket est bloqué. Il faudra lancer l'IA dans un thread séparé avec asyncio pour ne pas bloquer le serveur.
 
- ### Commande lancement du serveur 
+ ## Commande lancement du serveur 
 
+```bash
+pip install fastapi uvicorn websockets
+```
+
+Commande à lancer depuis **game_python** :  
+```bash
  uvicorn server:app --host 0.0.0.0 --port 8000
+ ````
