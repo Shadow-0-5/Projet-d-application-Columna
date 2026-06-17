@@ -22,3 +22,19 @@ document.getElementById("btn-ia").addEventListener("click", function() {
     const roomID = generateRoomID();
     window.location.href = `game.html?room=${roomID}&mode=ia`;
 });
+
+document.querySelectorAll(".btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    button.animate(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(.94)" },
+        { transform: "scale(1)" }
+      ],
+      {
+        duration: 180,
+        easing: "ease-out"
+      }
+    );
+  });
+});
