@@ -7,7 +7,7 @@ const mode = urlParams.get('mode') || "multi"; // "multi" par défaut si pas pr�
 // Si quelqu'un arrive sur la page sans ID, on le renvoie à l'accueil
 if (!roomID) {
     alert("Aucune partie trouvée. Retour à l'accueil.");
-    window.location.href = "acceuil.html";
+    window.location.href = "accueil.html";
 }
 
 // 2. On ouvre la connexion vers le serveur Python
