@@ -499,20 +499,6 @@ function endGame() {
   if (winner === myRole) {title = "Victoire";}
   else {title = "Défaite";}
   document.getElementById("modal-title").textContent = title;
-  document.getElementById("modal-body").innerHTML =
-    `<strong>${reason}</strong><br><br>` +
-    `Blancs : ${
-      Object.entries(ws)
-        .filter(([, v]) => v > 0)
-        .map(([k, v]) => `${v}×pile${k}`)
-        .join(", ") || "aucun"
-    }<br>` +
-    `Noirs : ${
-      Object.entries(bs)
-        .filter(([, v]) => v > 0)
-        .map(([k, v]) => `${v}×pile${k}`)
-        .join(", ") || "aucun"
-    }`;
   document.getElementById("end-modal").classList.add("show");
 }
 
