@@ -191,6 +191,19 @@ margin-bottom: 60px;
   animation: scan 0.7s linear infinite;
 }
 
+#btn-submit-rejoindre {
+  display: none;
+  min-height: 45px;
+  padding: 0 12px;
+  font: 700 0.85rem Inter, jim Nightshade, sans-serif;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+}
+
+#btn-submit-rejoindre.visible {
+  display: inline-flex;
+}
+
 @keyframes jitter {
   0%,
   100% {

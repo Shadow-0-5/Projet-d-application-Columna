@@ -18,7 +18,10 @@
         <button class="btn brainn" id="btn-ia"><img src="../img/robot.png " alt="" class="button_image" ><span>Jouer contre l'ordinateur</span></button>
     </section>
     <section style="margin-top: 2%;">
-        <form onsubmit="return joinRoom(event)"><input id="form-rejoindre" type="hidden"></form>
+        <form onsubmit="return joinRoom(event)" style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <input id="form-rejoindre" type="hidden">
+            <button type="submit" class="btn brain" id="btn-submit-rejoindre">Rejoindre</button>
+        </form>
     </section>
     
     <script src="js/accueil.js"></script>

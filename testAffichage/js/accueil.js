@@ -5,10 +5,12 @@ function generateRoomID() {
 
 let hideJoinInputTimeout = null;
 const joinInput = document.getElementById("form-rejoindre");
+const submitButton = document.getElementById("btn-submit-rejoindre");
 
 function hideJoinInput() {
     if (!joinInput.value.trim()) {
         joinInput.type = 'hidden';
+        submitButton.classList.remove('visible');
     }
 }
 
@@ -16,12 +18,13 @@ function resetHideJoinInputTimer() {
     if (hideJoinInputTimeout) {
         clearTimeout(hideJoinInputTimeout);
     }
-    hideJoinInputTimeout = setTimeout(hideJoinInput, 3000);
+    hideJoinInputTimeout = setTimeout(hideJoinInput, 5000);
 }
 
 function joinRoom(event) {
     if (event) event.preventDefault();
     const roomID = joinInput.value;
+    joinInput.value = "";
     console.log(roomID);
     if (!roomID || !roomID.trim()) {
         return false;
@@ -39,6 +42,7 @@ document.getElementById("btn-creer").addEventListener("click", function() {
 // 2. Rejoindre une partie
 document.getElementById("btn-rejoindre").addEventListener("click", function() {
     joinInput.type = 'text';
+    submitButton.classList.add('visible');
     joinInput.focus();
     resetHideJoinInputTimer();
 });
