@@ -13,7 +13,7 @@ if (!roomID) {
 
 // 2. On ouvre la connexion vers le serveur Python
 const socket = new WebSocket(
-  `ws://${window.location.hostname}:8200/ws/${roomID}?mode=${mode}`,
+  `ws://${window.location.hostname}:8000/ws/${roomID}?mode=${mode}`,
 );
 
 socket.onopen = function () {
@@ -550,9 +550,9 @@ function updateScores() {
       const pip = document.createElement("div");
       pip.className = "score-pip";
       pip.innerHTML = `<span class="score-pip-num">${counts[h]}</span><span class="score-pip-label">pile${h}</span>`;
-      if (counts[h] > 0)
-        pip.style.background =
-          h === 5 ? "#2a3a1a" : h === 4 ? "#1a2a3a" : "var(--surface2)";
+      // if (counts[h] > 0)
+      //   pip.style.background =
+      //     h === 5 ? "#2a3a1a" : h === 4 ? "#1a2a3a" : "var(--surface2)";
       breakdown.appendChild(pip);
     }
     // Active player highlight
