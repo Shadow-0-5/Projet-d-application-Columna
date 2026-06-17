@@ -108,3 +108,7 @@ La gestion de la déconnexion. Que se passe-t-il si un joueur ferme son onglet ?
 FastAPI lèvera une WebSocketDisconnect exception. Il faut la gérer explicitement pour ne pas laisser l'autre joueur bloqué indéfiniment.  
 **Le tour de l'IA.**  
  L'architecture dit "si c'est au tour de l'IA, on déclenche la fonction IA" — mais si le Minimax est profond, il peut prendre plusieurs secondes. Pendant ce temps le WebSocket est bloqué. Il faudra lancer l'IA dans un thread séparé avec asyncio pour ne pas bloquer le serveur.
+
+ ### Commande lancement du serveur 
+
+ uvicorn server:app --host 0.0.0.0 --port 8000
