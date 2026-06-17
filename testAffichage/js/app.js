@@ -28,7 +28,12 @@ socket.onmessage = function (event) {
   if (response.status === "sync" || response.status === "update") {
     if (response.role) {
       myRole = response.role;
-      alert("Vous jouez les : " + (myRole === "white" ? "Blancs" : "Noirs"));
+      if (myRole === "white") {
+        document.getElementById("score-card-name-white").innerText += "\t(Vous)";
+      }
+      else {
+        document.getElementById("score-card-name-black").innerText += "\t(Vous)";
+      }
     }
     const serverState = response.state;
     currentPlayer = serverState.turn;
