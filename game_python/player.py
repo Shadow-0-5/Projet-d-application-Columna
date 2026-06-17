@@ -50,6 +50,8 @@ class Player:
         _, self.action = self.tour_max(board2, -10000, 10000, PROFONDEUR)
         self.is_calculating = False
         
+        # 💥 AJOUTE CETTE LIGNE : On doit renvoyer l'action pour le serveur Web !
+        return self.action
     
 
     def tour_max(self, board : Board, alpha, beta, profondeur):
