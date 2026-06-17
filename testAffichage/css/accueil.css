@@ -219,6 +219,39 @@ margin-bottom: 60px;
 
 }
 
+/* Style pour le champ de saisie de l'ID de partie */
+#form-rejoindre {
+  display: inline-block;
+  width: 220px;
+  max-width: calc(100% - 40px);
+  box-sizing: border-box;
+  padding: 10px 14px;
+  margin: 8px 0 0 8px;
+  font-size: 1rem;
+  font-family: "Jim Nightshade", cursive;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
+}
+
+#form-rejoindre[type="hidden"] {
+  width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#form-rejoindre:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
 details {
 width: 100%;
 max-width: 580px;
