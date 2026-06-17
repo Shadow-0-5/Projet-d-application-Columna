@@ -28,7 +28,11 @@ flex-direction: column;
 align-items: center;
 user-select: none;
 color: var(--text);
-overflow-y: hidden;
+width: 100vw;
+height: 100vh;
+box-sizing: border-box;
+overflow: hidden;
+overflow-y: auto;
 }
 
 h1 {
@@ -52,7 +56,7 @@ letter-spacing: 0.15em;
 color: var(--text-dim);
 background-color: blanchedalmond;
 border-radius: 8px;
-padding: 2px 16px;
+padding: 8px 16px;
 margin-bottom: 60px;
 }
 
@@ -277,3 +281,9 @@ details[open] summary::before { content: '▼ '; }
 details p { margin-top: 8px; color: var(--text); }
 details ol { padding-left: 18px; margin-top: 4px; }
 details li { margin-bottom: 4px; }
+
+@media (max-width: 650px) {
+  body {
+    overflow-x: auto;
+  }
+}
