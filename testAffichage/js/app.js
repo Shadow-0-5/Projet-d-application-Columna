@@ -31,9 +31,12 @@ socket.onmessage = function (event) {
       if (myRole === "white") {
         document.getElementById("score-card-name-white").innerText +=
           "\t(Vous)";
-      } else {
+      } else if (myRole === "black") {
         document.getElementById("score-card-name-black").innerText +=
           "\t(Vous)";
+      } else {
+        document.getElementById("phase-title").innerText = "Spectateur";
+        document.getElementById("btn-abandon").style.display = "none";
       }
     }
     const serverState = response.state;
@@ -513,6 +516,8 @@ function updateStatusBar() {
   const desc = document.getElementById("phase-desc");
   if (gameOver) {
     title.textContent = "Partie terminée";
+    desc.textContent = "";
+  } else if (myRole === "spectator") {
     desc.textContent = "";
   } else if (myRole !== currentPlayer) {
     title.textContent = "En attente de l'adversaire";
