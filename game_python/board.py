@@ -13,21 +13,22 @@ class Board:
         self.dalles = []
         self.white_pawns = []
         self.black_pawns = []
-        if self.screen:
-            for i in range(6):
-                self.dalles.append([])
-                for j in range(6):
-                    self.dalles[i].append(1)
+        for i in range(6):
+            self.dalles.append([])
+            for j in range(6):
+                self.dalles[i].append(1)
 
-            self.white_pawns = [(2, 0), (2, 3), (0, 5), (5, 4)]
-            self.black_pawns = [(0, 1), (3, 2), (3, 5), (5, 0)]
-            
-            self.board_image = pygame.image.load("img/board.jpg")
-            self.dalle_images = [
-                pygame.image.load(f"img/dalle{i}.jpg") for i in range(1, 6)
-            ]
-            self.black_pawns_image = pygame.image.load("img/pion_noir.png")
-            self.white_pawns_image = pygame.image.load("img/pion_blanc.png")
+        self.white_pawns = [(2, 0), (2, 3), (0, 5), (5, 4)]
+        self.black_pawns = [(0, 1), (3, 2), (3, 5), (5, 0)]
+        
+        self.board_image = pygame.image.load("img/board.jpg")
+        self.dalle_images = [
+            pygame.image.load(f"img/dalle{i}.jpg") for i in range(1, 6)
+        ]
+        self.black_pawns_image = pygame.image.load("img/pion_noir.png")
+        self.white_pawns_image = pygame.image.load("img/pion_blanc.png")
+
+        self.turn = 0
 
     # une fonction display -> affiche le plateau, dalles et pion
     def display(self):
@@ -93,6 +94,7 @@ class Board:
             nb_dalles = self.dalles[begin[0]][begin[1]]
             self.dalles[end[0]][end[1]] += nb_dalles
             self.dalles[begin[0]][begin[1]] = 0
+            self.turn += 1
             return nb_dalles
         
     def undo_move(self, begin, end, nb_dalles = None):
@@ -101,6 +103,7 @@ class Board:
         else:
             self.dalles[end[0]][end[1]] -= nb_dalles
             self.dalles[begin[0]][begin[1]] = nb_dalles
+            self.turn -= 1
 
     def get_all_pawns_move(self, color):
         all_moves = []
@@ -195,10 +198,12 @@ class Board:
         
     def copy(self):
         board = Board(None)
+        board.dalles = []
         for l in self.dalles:
             board.dalles.append(l.copy())
         board.white_pawns = self.white_pawns.copy()
         board.black_pawns = self.black_pawns.copy()
+        board.turn = self.turn
         return board
     
     def get_voisins(self, pos):

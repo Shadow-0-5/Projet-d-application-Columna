@@ -5,7 +5,7 @@ from board import Board
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-PROFONDEUR = 2
+
 
 # distance :  |   0   |   1   |   2   |   3   |   4+
 
@@ -13,7 +13,8 @@ PROFONDEUR = 2
 # tour de 4 : |  18   |  12   |   6   |   2   |   0
 # tour de 3 : |   6   |   3   |   1   |   0   |   0   
 # tour de 2 : |   2   |   1   |   0   |   0   |   0
-POINTS_EVALUATION = {
+
+POINTS_EVALUATION_DEFAULT = {
     "T5" : 55,
     "T5_D1" : 36,
     "T5_D2" : 15,
@@ -37,17 +38,85 @@ POINTS_EVALUATION = {
     "T1" : 0,
 }
 
+POINTS_EVALUATION_MOBILITY = {
+    "T5" : 20,
+    "T5_D1" : 8,
+    "T5_D2" : 4,
+    "T5_D3" : 2,
+
+    "T4" : 10,
+    "T4_D1" : 4,
+    "T4_D2" : 1,
+    "T4_D3" : 0,
+
+    "T3" : 4,
+    "T3_D1" : 1,
+    "T3_D2" : 0,
+    "T3_D3" : 0,
+
+    "T2" : 2,
+    "T2_D1" : 0,
+    "T2_D2" : 0,
+    "T2_D3" : 0,
+
+    "T1" : 0,
+}
+
+POINTS_EVALUATION_TOWER = {
+    "T5" : 80,
+    "T5_D1" : 38,
+    "T5_D2" : 25,
+    "T5_D3" : 10,
+
+    "T4" : 35,
+    "T4_D1" : 25,
+    "T4_D2" : 10,
+    "T4_D3" : 5,
+
+    "T3" : 10,
+    "T3_D1" : 6,
+    "T3_D2" : 4,
+    "T3_D3" : 0,
+
+    "T2" : 5,
+    "T2_D1" : 3,
+    "T2_D2" : 0,
+    "T2_D3" : 0,
+
+    "T1" : 0,
+}
+
+
 class Player:
-    def __init__(self, color, IA=False):
+    def __init__(self, color, IA=False, profondeur = 1):
+        self.POINTS_EVALUATION = POINTS_EVALUATION_MOBILITY
+
         self.IA = IA
         self.color = color
 
         self.is_calculating = False
         self.action = None
+        self.PROFONDEUR = profondeur
+
+    def set_type(self, board):
+        if board.turn <= 10:
+            self.type = "mobility"
+        elif board.turn <= 20:
+            self.type = "default"
+        else:
+            self.type = "tower"
+        if self.type == "default":
+            self.POINTS_EVALUATION = POINTS_EVALUATION_DEFAULT
+        elif self.type == "mobility":
+            self.POINTS_EVALUATION = POINTS_EVALUATION_MOBILITY
+        elif self.type == "tower":
+            self.POINTS_EVALUATION = POINTS_EVALUATION_TOWER
+
 
     def take_action(self, board):
         board2 = board.copy()
-        _, self.action = self.tour_max(board2, -10000, 10000, PROFONDEUR)
+        self.set_type(board)
+        _, self.action = self.tour_max(board2, -10000, 10000, self.PROFONDEUR)
         self.is_calculating = False
         
     
@@ -62,15 +131,30 @@ class Player:
         a = None
         i = -1
         for move in all_moves_possible:
-            if profondeur == PROFONDEUR:
+            if profondeur == self.PROFONDEUR:
                 # print(f"move {i} / {len(all_moves_possible)}")
                 i+=1
             # vboard = board.copy()
             board.move(move[0], move[1])
             all_stacks_possible = board.get_all_slabs_stack()
+            if not all_stacks_possible:
+                res = board.get_result()
+                if res == self.color:
+                    u_min = 100000
+                elif res == "draw":
+                    u_min = 0
+                else:
+                    u_min = -100000
+                if u == None or u_min > u:
+                    a = (move, None)
+                    u = u_min
+                if u >= beta:
+                    board.undo_move(move[0], move[1])
+                    return (u, a)
+                alpha = max(alpha, u)
             j=0
             for stack in all_stacks_possible:
-                if profondeur == PROFONDEUR:
+                if profondeur == self.PROFONDEUR:
                     percent = round(len50*i + len50 * j / len(all_stacks_possible))
                     bar = "\r|" 
                     for _ in range(percent): bar += "=" 
@@ -106,6 +190,21 @@ class Player:
             # vboard = board.copy()
             board.move(move[0], move[1])
             all_stacks_possible = board.get_all_slabs_stack()
+            if not all_stacks_possible:
+                res = board.get_result()
+                if res == self.color:
+                    u_max = 100000
+                elif res == "draw":
+                    u_max = 0
+                else:
+                    u_max = -100000
+                if u == None or u_max < u:
+                    a = (move, None)
+                    u = u_max
+                if u <= alpha:
+                    board.undo_move(move[0], move[1])
+                    return (u, a)
+                beta = min(beta, u)
             for stack in all_stacks_possible:
                 # vvboard = vboard.copy()
                 nb_dalles = board.move(stack[0], stack[1])
@@ -131,19 +230,19 @@ class Player:
                 if tower_size <= 1: continue
     
                 if (y,x) in board.white_pawns:
-                    white_points[board.white_pawns.index((y,x)), y*6+x] = POINTS_EVALUATION[f"T{tower_size}"]
+                    white_points[board.white_pawns.index((y,x)), y*6+x] = self.POINTS_EVALUATION[f"T{tower_size}"]
                     continue
                 if (y,x) in board.black_pawns:
-                    black_points[board.black_pawns.index((y,x)), y*6+x] = POINTS_EVALUATION[f"T{tower_size}"]
+                    black_points[board.black_pawns.index((y,x)), y*6+x] = self.POINTS_EVALUATION[f"T{tower_size}"]
                     continue
 
                 for i in range(4):
                     try:
-                        white_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.white_pawns[i], (y, x))}"]
+                        white_points[i,y*6+x] = self.POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.white_pawns[i], (y, x))}"]
                     except:
                         pass
                     try:
-                        black_points[i,y*6+x] = POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.black_pawns[i], (y, x))}"]
+                        black_points[i,y*6+x] = self.POINTS_EVALUATION[f"T{tower_size}_D{board.A_Star(board.black_pawns[i], (y, x))}"]
                     except:
                         pass        
 
