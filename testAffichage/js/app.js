@@ -432,7 +432,6 @@ function confirmerAbandonNetwork() {
   if (socket && socket.readyState === WebSocket.OPEN) {
     const payloadAbandon = {
       action: "abandon",
-      pseudo: MY_PSEUDO,
       role: myRole,
     };
     socket.send(JSON.stringify(payloadAbandon));
