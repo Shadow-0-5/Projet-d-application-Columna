@@ -97,11 +97,20 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="disconnect-modal">
+  <div class="modal">
+    <button class="modal-close" type="button" onclick="closeDisconnectModal()" aria-label="Fermer">×</button>
+    <h2 id="disconnect-title"></h2>
+    <p id="disconnect-body"></p>
+  </div>
+</div>
+
 <!-- Modal fin de partie -->
 <div class="modal-overlay" id="end-modal">
   <div class="modal">
     <button class="modal-close" type="button" onclick="closeEndModal()" aria-label="Fermer">×</button>
-    <h2 id="modal-title"></h2>
+    <h2 id="modal-title">Partie terminée</h2>
+    <img src="../img/panda.png" alt="" height="200px"/>
     <p id="modal-body"></p>
   <button class="btn" onclick="window.location.href='accueil.html'">Retour à l'accueil</button></div>
 </div>
