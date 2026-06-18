@@ -43,8 +43,8 @@ async def abandon_timer(room_id, disconnected_role):
                 pass
                 
     try:
-        # 2. ⏱️ On patiente 1 minute
-        await asyncio.sleep(5) 
+        # 2. ⏱️ On patiente 30 secondes
+        await asyncio.sleep(30) 
         
         # 3. 🏁 Si on arrive ici, les 60s sont écoulées, forfait !
         if room_id in parties:
