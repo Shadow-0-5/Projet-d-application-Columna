@@ -70,6 +70,25 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
         while True:
             data = await websocket.receive_json()
             
+            if data.get("action") == "abandon":
+                leaver_role = data.get("role")
+                print(f"[Serveur] Demande d'abandon reçue de {leaver_role} pour la room {room_id}")
+                if room_id in parties:
+                    les_clients = parties[room_id]["clients"].copy()
+
+                    for client in les_clients:
+                        if client != websocket:
+                            try:
+                                await client.send_json({"action": "opponent_abandoned"})
+                                print("[Serveur] Notification d'abandon envoyée à l'adversaire.")
+                            except Exception as e:
+                                print(f"[Serveur] Impossible de joindre l'adversaire : {e}")
+                    
+                    del parties[room_id]
+                    print(f"[Serveur] Room {room_id} fermée et détruite après abandon.")
+
+                break
+
             if data["action"] in ["move", "stack"]:
                 parties[room_id]["board"].move(tuple(data["from"]), tuple(data["to"]))
                 
@@ -125,4 +144,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                         print("L'IA n'a plus de coups possibles !")
 
     except Exception as e:
-        parties[room_id]["clients"].remove(websocket)
+        print(f" ERREUR CRITIQUE WEB SOCKET : {e}")
+        if room_id in parties and websocket in parties[room_id]["clients"]:
+            parties[room_id]["clients"].remove(websocket)

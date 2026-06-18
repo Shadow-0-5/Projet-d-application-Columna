@@ -25,6 +25,22 @@ socket.onmessage = function (event) {
   const response = JSON.parse(event.data);
   console.log("Mise à jour reçue du serveur :", response);
 
+  if (response.action === "opponent_abandoned") {
+    console.log("[Front-End] Signal reçu : L'adversaire a abandonné.");
+    const endModal = document.getElementById("end-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    if (endModal && modalTitle && modalBody) {
+      modalTitle.innerText = "Victoire !";
+      modalTitle.style.color = "var(--gold)";
+      modalBody.innerHTML =
+        "<strong>Victoire.</strong><br>L'adversaire a abandonné.";
+      endModal.classList.add("show");
+    }
+    socket.close();
+  }
+
   if (response.status === "sync" || response.status === "update") {
     if (response.role) {
       myRole = response.role;
@@ -427,41 +443,30 @@ function fermerModalAbandon() {
 }
 
 function confirmerAbandonNetwork() {
-  //console.log("[Front-End] Abandon confirmé par le joueur.");
-
+  //console.log("[Front-End] Tentative d'abandon...");
   fermerModalAbandon();
 
-  // A CHANGER POUR LE SERVEUR ??
   if (socket && socket.readyState === WebSocket.OPEN) {
     const payloadAbandon = {
       action: "abandon",
       role: myRole,
     };
     socket.send(JSON.stringify(payloadAbandon));
-    //console.log("[Back-End Info] Payload envoyé au serveur :", payloadAbandon);
-    socket.close();
+    //console.log("[RÉSEAU] Payload envoyé au serveur :", payloadAbandon);
   } else {
-    //console.warn("[Back-End Info] WebSocket non connecté.");
+    // console.error(
+    //   "[RÉSEAU] Impossible d'abandonner : le WebSocket est fermé !",
+    // );
   }
 
   const endModal = document.getElementById("end-modal");
-  const modalTitle = document.getElementById("modal-title");
-  const modalBody = document.getElementById("modal-body");
-
-  if (endModal && modalTitle && modalBody) {
-    modalTitle.innerText = "Partie terminée";
-    modalBody.innerHTML =
+  if (endModal) {
+    document.getElementById("modal-title").innerText = "Partie terminée";
+    document.getElementById("modal-body").innerHTML =
       "Vous avez abandonné la partie.<br><strong>Défaite</strong>";
-
     endModal.classList.add("show");
-    //console.log("[Front-End] Modal de fin de partie affiché avec succès.");
-  } else {
-    //console.error(
-    //  "[Front-End Error] Impossible de trouver les ID du modal de fin dans le HTML.",
-    //);
   }
 }
-
 // ========== FIN DE PARTIE ==========
 
 function computeScore(color) {
@@ -498,8 +503,11 @@ function endGame() {
 
   render();
   let title = "";
-  if (winner === myRole) {title = "Victoire";}
-  else {title = "Défaite";}
+  if (winner === myRole) {
+    title = "Victoire";
+  } else {
+    title = "Défaite";
+  }
   document.getElementById("modal-title").textContent = title;
   document.getElementById("end-modal").classList.add("show");
 }
@@ -573,4 +581,4 @@ function restartGame() {
 
 // ========== INIT ==========
 initBoard();
-render();
+//render();
