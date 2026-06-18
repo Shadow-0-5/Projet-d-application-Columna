@@ -370,6 +370,19 @@ details li { margin-bottom: 4px; }
   margin: 0;
 }
 
+.rules-divider {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 15px 0 10px 0;
+}
+
+.credits {
+  font-size: 0.8rem;
+  margin-top: 2px !important;
+  color: var(--text-dim) !important;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
