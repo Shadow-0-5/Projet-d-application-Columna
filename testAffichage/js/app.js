@@ -329,9 +329,9 @@ function render() {
   updateStatusBar();
   updateScores();
   drawArrows();
-  document.getElementById("btn-cancel").style.display = selectedCell
-    ? "block"
-    : "none";
+  //   document.getElementById("btn-cancel").style.display = selectedCell
+  //     ? "block"
+  //     : "none";
 }
 
 function applyInteractions(el, r, c, cell) {
