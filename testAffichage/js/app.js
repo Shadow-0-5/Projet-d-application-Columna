@@ -1,5 +1,12 @@
 // ========== WEBSOCKET & RÉSEAU ==========
 let myRole = null; // Stockera 'white', 'black', ou 'spectator'
+// 1. 🔒 Création de la "Carte d'Identité" (elle survit au rafraîchissement F5)
+let playerId = sessionStorage.getItem('columna_player_id');
+if (!playerId) {
+    // S'il n'en a pas, on lui crée un ID aléatoire
+    playerId = Math.random().toString(36).substring(2, 15);
+    sessionStorage.setItem('columna_player_id', playerId);
+}
 // 1. On récupère l'ID de la partie dans l'URL (ex: ?room=A8F3K)
 const urlParams = new URLSearchParams(window.location.search);
 const roomID = urlParams.get("room");
@@ -20,10 +27,26 @@ socket.onopen = function () {
   console.log(`Connecté au serveur Python sur le salon : ${roomID}`);
 };
 
-socket.onmessage = function (event) {
-  // On traduit le texte JSON reçu en objet JavaScript
-  const response = JSON.parse(event.data);
-  console.log("Mise à jour reçue du serveur :", response);
+socket.onmessage = function(event) {
+    // On traduit le texte JSON reçu en objet JavaScript
+    const response = JSON.parse(event.data);
+    console.log("Mise à jour reçue du serveur :", response);
+    // ==========================================
+    // 🚨 NOUVEAU : GESTION DES DÉCONNEXIONS
+    // ==========================================
+    if (response.status === "opponent_disconnected") {
+        alert("⚠️ Votre adversaire a été déconnecté ! S'il ne revient pas d'ici 1 minute, vous remportez la partie.");
+        return; // On arrête là
+    } 
+    else if (response.status === "opponent_reconnected") {
+        alert("✅ Votre adversaire est de retour ! Le combat reprend.");
+        return;
+    }
+    else if (response.status === "victory_by_abandon") {
+        gameOver = true; // On bloque le plateau en JavaScript
+        alert(response.message);
+        return;
+    }
 
   if (response.status === "sync" || response.status === "update") {
     if (response.role) {
