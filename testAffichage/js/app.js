@@ -54,7 +54,44 @@ socket.onmessage = function (event) {
       document.getElementById("disconnect-modal").classList.add("show");
     }
     return;
-  } else if (response.status === "victory_by_abandon") {
+  } else if (response.status === "victory") {
+    gameOver = true;
+    updateStatusBar();
+
+    const btnAbandon = document.getElementById("btn-abandon");
+    if (btnAbandon) {
+      btnAbandon.disabled = true;
+      btnAbandon.style.opacity = "0.5";
+      btnAbandon.style.cursor = "not-allowed";
+    }
+
+    const endModal = document.getElementById("end-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    if (endModal && modalTitle && modalBody) {
+      modalTitle.innerText = "Partie terminée";
+
+      if (myRole === "spectator") {
+        if (response.winner === "white") {
+          modalBody.innerHTML = "Les Blancs remportent la partie !";
+        } else {
+          modalBody.innerHTML = "Les Noirs remportent la partie !";
+        }
+      } else if (myRole === response.winner) {
+        modalTitle.style.color = "var(--gold)";
+        modalBody.innerHTML =
+          "<strong>Victoire</strong>";
+      } else {
+        modalBody.innerHTML =
+          "<strong>Défaite</strong>";
+      }
+      endModal.classList.add("show");
+    }
+
+    socket.close();
+    return;
+  }else if (response.status === "victory_by_abandon") {
     gameOver = true;
     updateStatusBar();
 
@@ -711,7 +748,6 @@ function computeScore(color) {
 }
 
 function endGame() {
-  gameOver = true;
   const ws = computeScore("white");
   const bs = computeScore("black");
 
@@ -743,6 +779,13 @@ function endGame() {
   document.getElementById("modal-title").textContent = "Partie terminée";
   document.getElementById("modal-body").innerHTML = res;
   document.getElementById("end-modal").classList.add("show");
+
+  const btnAbandon = document.getElementById("btn-abandon");
+    if (btnAbandon) {
+      btnAbandon.disabled = true;
+      btnAbandon.style.opacity = "0.5";
+      btnAbandon.style.cursor = "not-allowed";
+    }
 }
 
 // ========== UI ==========

@@ -188,7 +188,7 @@ box-shadow: 0 6px 28px rgba(0,0,0,0.4);
 .cell {
 position: relative;
 border-radius: 6px;
-background: rgba(245, 230, 200, 0.75);
+/* background: rgba(245, 230, 200, 0.75); */
 cursor: default;
 transition: background 0.15s, transform 0.1s;
 display: flex;
@@ -229,6 +229,13 @@ font-size: 1rem;
 font-weight: bold;
 transition: all 0.2s ease;
 pointer-events: none;
+}
+
+.tile-stack.h1 {
+background-color: rgb(245, 230, 200);
+color: #5c3a21;
+box-shadow: 0 4px 0 rgb(155, 149, 138);
+transform: translateY(-4px);
 }
 
 .tile-stack.h2 {
