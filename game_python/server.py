@@ -74,15 +74,13 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
             "ws_black": None,
             "id_white": None,
             "id_black": None,
-            "task_white": None, # ⏱️ Stocke le chrono du joueur Blanc
-            "task_black": None  # ⏱️ Stocke le chrono du joueur Noir
+            "task_white": None,
+            "task_black": None
         }
     
-    # 🤖 CAS SPÉCIAL : Si on joue contre l'IA, et que le hasard a choisi l'IA (Noirs) pour commencer :
         if mode == "ia" and start_turn == "black":
             ia = parties[room_id]["ia"]
             le_board = parties[room_id]["board"]
-            # L'IA joue son tout premier coup instantanément, avant même que l'humain n'affiche la page
             ia.take_action(le_board)
             if getattr(ia, 'action', None):
                 m_act, s_act = ia.action
@@ -90,7 +88,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 parties[room_id]["last_pion_move"] = {"from": list(m_act[0]), "to": list(m_act[1])}  
                 le_board.move(s_act[0], s_act[1])
                 parties[room_id]["last_stack_move"] = {"from": list(s_act[0]), "to": list(s_act[1])}
-                parties[room_id]["turn"] = "white" # La main passe à l'humain
+                parties[room_id]["turn"] = "white"
    
     p = parties[room_id]
     role = "spectator"
@@ -99,7 +97,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
         if player_id == p["id_white"]:
             role = "white"
             p["ws_white"] = websocket
-            # 🛑 LE JOUEUR BLANC EST REVENU : On annule son chrono d'abandon !
             if p["task_white"]:
                 p["task_white"].cancel()
                 p["task_white"] = None
@@ -109,7 +106,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
         elif player_id == p["id_black"]:
             role = "black"
             p["ws_black"] = websocket
-            # 🛑 LE JOUEUR NOIR EST REVENU : On annule son chrono d'abandon !
             if p["task_black"]:
                 p["task_black"].cancel()
                 p["task_black"] = None
@@ -235,8 +231,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                         }
                         for client in p["clients"]:
                             await client.send_json(new_state_ia)
-
-# ... (Ceci est la fin de la boucle "while True:" et des actions du joueur)
 
     except Exception as e:
         print("Erreur : ", e)
