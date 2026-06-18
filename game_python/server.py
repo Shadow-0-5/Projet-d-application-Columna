@@ -1,7 +1,8 @@
-from fastapi import FastAPI, WebSocket
-from fastapi.middleware.cors import CORSMiddleware
+import random
 import asyncio
 import json
+from fastapi import FastAPI, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 
 from board import Board
 from player import Player # Import de ton IA
@@ -27,7 +28,6 @@ def get_board_state(partie):
         "phase": partie["phase"]
     }
 
-# On ajoute le paramètre "mode" à la connexion
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "multi"):
     await websocket.accept()
@@ -36,36 +36,50 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
         print(f"Création de la partie {room_id} (Mode: {mode})")
         parties[room_id] = {
             "board": Board(screen=None),
-            "clients": [],
-            "turn": "white",
+            "clients": [],         # Liste de WebSockets purs
+            "roles": {},           # Dictionnaire {websocket: role}
+            "turn": "white" if mode == "ia" else "waiting",
             "phase": "move",
             "mode": mode,
-            "ia": Player(color="black", IA=True) if mode == "ia" else None # L'IA joue les Noirs
+            "ia": Player(color="black", IA=True) if mode == "ia" else None
         }
     
     # 1. Attribuer les couleurs
     nb_joueurs = len(parties[room_id]["clients"])
     
     if parties[room_id]["mode"] == "ia":
-        # En mode IA, le joueur humain est toujours Blanc, et personne d'autre ne peut jouer
         role = "white" if nb_joueurs == 0 else "spectator"
     else:
-        # En mode Multi, Blanc puis Noir
         if nb_joueurs == 0:
             role = "white"
         elif nb_joueurs == 1:
             role = "black"
+            # Lancement du tirage au sort à l'arrivée du deuxième joueur
+            parties[room_id]["turn"] = random.choice(["white", "black"])
         else:
             role = "spectator"
             
+    # Stockage propre des structures séparées
     parties[room_id]["clients"].append(websocket)
+    parties[room_id]["roles"][websocket] = role
 
     try:
-        await websocket.send_json({
-            "status": "sync",
-            "role": role,
-            "state": get_board_state(parties[room_id])
-        })
+        # Synchro de début de partie
+        if parties[room_id]["turn"] != "waiting":
+            print(f"La partie {room_id} commence ! Premier joueur : {parties[room_id]['turn']}")
+            for client in parties[room_id]["clients"]:
+                client_role = parties[room_id]["roles"].get(client, "spectator")
+                await client.send_json({
+                    "status": "sync",
+                    "role": client_role,
+                    "state": get_board_state(parties[room_id])
+                })
+        else:
+            await websocket.send_json({
+                "status": "sync",
+                "role": role,
+                "state": get_board_state(parties[room_id])
+            })
 
         while True:
             data = await websocket.receive_json()
@@ -79,7 +93,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                     parties[room_id]["phase"] = "move"
                     parties[room_id]["turn"] = "black" if parties[room_id]["turn"] == "white" else "white"
                 
-                # On diffuse le plateau après l'action de l'humain
+                # Diffusion aux clients connectés
                 new_state = {
                     "status": "update",
                     "state": get_board_state(parties[room_id])
@@ -93,28 +107,21 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 if parties[room_id]["mode"] == "ia" and parties[room_id]["turn"] == "black":
                     print("L'IA réfléchit...")
                     
-                    # On fait tourner le Minimax dans un thread séparé pour ne pas freezer le serveur
                     ia_player = parties[room_id]["ia"]
                     le_board = parties[room_id]["board"]
                     
-                    # L'IA calcule son coup
                     action = await asyncio.to_thread(ia_player.take_action, le_board)
                     
                     if action:
                         move_action, stack_action = action
-                        
-                        # L'IA applique son mouvement
                         parties[room_id]["board"].move(move_action[0], move_action[1])
-                        # L'IA applique son empilement
                         parties[room_id]["board"].move(stack_action[0], stack_action[1])
                         
-                        # Fin du tour de l'IA, c'est au tour de l'humain (Blancs)
                         parties[room_id]["turn"] = "white"
                         parties[room_id]["phase"] = "move"
                         
                         print("L'IA a joué :", action)
                         
-                        # On diffuse le nouveau plateau après le coup de l'IA
                         new_state_ia = {
                             "status": "update",
                             "state": get_board_state(parties[room_id])
@@ -125,4 +132,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                         print("L'IA n'a plus de coups possibles !")
 
     except Exception as e:
-        parties[room_id]["clients"].remove(websocket)
+        print(f"Déconnexion ou canal fermé : {e}")
+    finally:
+        # Nettoyage sécurisé à l'aide de blocs d'appartenance conditionnels
+        if room_id in parties:
+            if websocket in parties[room_id]["clients"]:
+                parties[room_id]["clients"].remove(websocket)
+            if websocket in parties[room_id]["roles"]:
+                del parties[room_id]["roles"][websocket]
