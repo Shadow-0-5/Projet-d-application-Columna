@@ -51,7 +51,7 @@ socket.onmessage = function (event) {
     return;
   } else if (response.status === "victory_by_abandon") {
     gameOver = true;
-
+    updateStatusBar();
     const btnAbandon = document.getElementById("btn-abandon");
     if (btnAbandon) {
       btnAbandon.disabled = true;
@@ -657,6 +657,14 @@ function confirmerAbandonNetwork() {
       "Vous avez abandonné la partie.<br><strong>Défaite</strong>";
     endModal.classList.add("show");
   }
+  const btnAbandon = document.getElementById("btn-abandon");
+    if (btnAbandon) {
+      btnAbandon.disabled = true;
+      btnAbandon.style.opacity = "0.5"; // Optionnel : donne un effet visuel grisé
+      btnAbandon.style.cursor = "not-allowed";
+    }
+  gameOver = true;
+  updateStatusBar();
 }
 // ========== FIN DE PARTIE ==========
 

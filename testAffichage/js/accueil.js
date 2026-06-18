@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const RENDER_WS_URL = "wss://LIEN_DE_RENDER.onrender.com"; // TODO Remplacer par l'URL de Render
+  const RENDER_WS_URL = "wss://columna.onrender.com"; // TODO Remplacer par l'URL de Render
 
   //console.log("[Network] Tentative de connexion au serveur Render...");
   const checkSocket = new WebSocket(RENDER_WS_URL);
