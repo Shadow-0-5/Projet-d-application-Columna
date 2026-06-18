@@ -52,6 +52,13 @@ socket.onmessage = function (event) {
   } else if (response.status === "victory_by_abandon") {
     gameOver = true;
 
+    const btnAbandon = document.getElementById("btn-abandon");
+    if (btnAbandon) {
+      btnAbandon.disabled = true;
+      btnAbandon.style.opacity = "0.5"; // Optionnel : donne un effet visuel grisé
+      btnAbandon.style.cursor = "not-allowed";
+    }
+
     const endModal = document.getElementById("end-modal");
     const modalTitle = document.getElementById("modal-title");
     const modalBody = document.getElementById("modal-body");
