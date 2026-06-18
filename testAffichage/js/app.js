@@ -20,7 +20,7 @@ if (!roomID) {
 
 // 2. On ouvre la connexion vers le serveur Python
 const socket = new WebSocket(
-  `ws://${window.location.hostname}:8000/ws/${roomID}?mode=${mode}`,
+  `ws://${window.location.hostname}:8000/ws/${roomID}?mode=${mode}&player_id=${playerId}`
 );
 
 socket.onopen = function () {
