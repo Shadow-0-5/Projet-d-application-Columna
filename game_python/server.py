@@ -24,7 +24,9 @@ def get_board_state(partie):
         "white_pawns": partie["board"].white_pawns,
         "black_pawns": partie["board"].black_pawns,
         "turn": partie["turn"],
-        "phase": partie["phase"]
+        "phase": partie["phase"],
+        "last_pion_move": partie.get("last_pion_move"),
+        "last_stack_move": partie.get("last_stack_move")
     }
 
 # ==========================================
@@ -144,9 +146,12 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 
                 if data["action"] == "move":
                     p["phase"] = "stack"
+                    parties[room_id]["last_pion_move"] = {"from": data["from"], "to": data["to"]}
+                    parties[room_id]["last_stack_move"] = None
                 elif data["action"] == "stack":
                     p["phase"] = "move"
                     p["turn"] = "black" if p["turn"] == "white" else "white"
+                    parties[room_id]["last_stack_move"] = {"from": data["from"], "to": data["to"]}
                 
                 new_state = {
                     "status": "update",
@@ -163,7 +168,10 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                     if action:
                         move_action, stack_action = action
                         p["board"].move(move_action[0], move_action[1])
+                        parties[room_id]["last_pion_move"] = {"from": list(move_action[0]), "to": list(move_action[1])}
+                        
                         p["board"].move(stack_action[0], stack_action[1])
+                        parties[room_id]["last_stack_move"] = {"from": list(stack_action[0]), "to": list(stack_action[1])}
                         p["turn"] = "white"
                         p["phase"] = "move"
                         
