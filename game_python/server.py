@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
+import random
 
 from board import Board
 from player import Player
@@ -67,12 +68,12 @@ async def abandon_timer(room_id, disconnected_role):
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "multi", player_id: str = ""):
     await websocket.accept()
-    
+    start_turn = random.choice(["white", "black"])
     if room_id not in parties:
         parties[room_id] = {
             "board": Board(screen=None),
             "clients": [],
-            "turn": "white",
+            "turn": start_turn,
             "phase": "move",
             "mode": mode,
             "ia": Player(color="black", IA=True) if mode == "ia" else None,
@@ -84,6 +85,20 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
             "task_black": None  # ⏱️ Stocke le chrono du joueur Noir
         }
     
+    # 🤖 CAS SPÉCIAL : Si on joue contre l'IA, et que le hasard a choisi l'IA (Noirs) pour commencer :
+        if mode == "ia" and start_turn == "black":
+            ia = parties[room_id]["ia"]
+            le_board = parties[room_id]["board"]
+            # L'IA joue son tout premier coup instantanément, avant même que l'humain n'affiche la page
+            ia.take_action(le_board)
+            if getattr(ia, 'action', None):
+                m_act, s_act = ia.action
+                le_board.move(m_act[0], m_act[1])
+                parties[room_id]["last_pion_move"] = {"from": list(m_act[0]), "to": list(m_act[1])}
+                le_board.move(s_act[0], s_act[1])
+                parties[room_id]["last_stack_move"] = {"from": list(s_act[0]), "to": list(s_act[1])}
+                parties[room_id]["turn"] = "white" # La main passe à l'humain
+   
     p = parties[room_id]
     role = "spectator"
 
