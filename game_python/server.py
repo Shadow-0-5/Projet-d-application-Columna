@@ -140,6 +140,26 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
             if p["turn"] == "white" and websocket != p.get("ws_white"): continue
             if p["turn"] == "black" and websocket != p.get("ws_black"): continue
             if p["phase"] == "game_over": continue # 🔒 Bloque les clics si la partie est finie
+
+            # ==========================================
+            # 🚨 GESTION DE L'ABANDON VOLONTAIRE
+            # ==========================================
+            if data["action"] == "abandon":
+                p["phase"] = "game_over" # Verrouille la partie
+                abandon_role = data.get("role")
+                winner = "black" if abandon_role == "white" else "white"
+                
+                new_state = {
+                    "status": "victory_by_abandon",
+                    "winner": winner,
+                    "message": "L'adversaire a capitulé. Vous remportez la victoire !"
+                }
+                for client in p["clients"]:
+                    try:
+                        await client.send_json(new_state)
+                    except Exception:
+                        pass
+                continue # On passe au message suivant
                 
             if data["action"] in ["move", "stack"]:
                 p["board"].move(tuple(data["from"]), tuple(data["to"]))
@@ -203,7 +223,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
             disc_role = "black"
             p["ws_black"] = None
             
-        # Si c'est un vrai joueur qui vient de partir
-        if disc_role:
-            # 🚀 On délègue tout le travail à la nouvelle tâche (qui survit à la fermeture)
+       # 🔒 NOUVEAU : On lance le chrono SEULEMENT si la partie n'est pas déjà finie (Abandon manuel ou Vraie fin)
+        if disc_role and p["phase"] != "game_over":
             p[f"task_{disc_role}"] = asyncio.create_task(abandon_timer(room_id, disc_role))

@@ -43,8 +43,24 @@ socket.onmessage = function(event) {
         return;
     }
     else if (response.status === "victory_by_abandon") {
-        gameOver = true; // On bloque le plateau en JavaScript
-        alert(response.message);
+        gameOver = true; // On bloque le plateau
+        
+        // 🐼 Affichage dans ton beau Modal au lieu du pop-up classique
+        const endModal = document.getElementById("end-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+        
+        if (endModal && modalTitle && modalBody) {
+            // On adapte le titre si on est le vainqueur ou juste le spectateur
+            if (myRole === response.winner) {
+                modalTitle.innerText = "Victoire !";
+            } else {
+                modalTitle.innerText = "Partie terminée";
+            }
+            
+            modalBody.innerHTML = response.message;
+            endModal.classList.add("show");
+        }
         return;
     }
 
