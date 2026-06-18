@@ -165,6 +165,8 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                     "winner": winner,
                 }
                 for client in p["clients"]:
+                    if websocket == client:
+                        continue
                     try:
                         await client.send_json(new_state)
                     except Exception:
