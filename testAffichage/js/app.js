@@ -646,10 +646,11 @@ function endGame() {
   }
 
   render();
-  let title = "";
-  if (winner === myRole) {title = "Victoire";}
-  else {title = "Défaite";}
-  document.getElementById("modal-title").textContent = title;
+  let res = "";
+  if (winner === myRole) {res = "<strong>Victoire</strong";}
+  else {res = "<strong>Défaite</strong>";}
+  document.getElementById("modal-title").textContent = "Partie terminée";
+  document.getElementById("modal-body").innerHTML = res;
   document.getElementById("end-modal").classList.add("show");
 }
 
