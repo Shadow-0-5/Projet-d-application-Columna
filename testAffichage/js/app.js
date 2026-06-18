@@ -31,16 +31,23 @@ socket.onmessage = function (event) {
   // On traduit le texte JSON reçu en objet JavaScript
   const response = JSON.parse(event.data);
   console.log("Mise à jour reçue du serveur :", response);
-  // ==========================================
-  // 🚨 NOUVEAU : GESTION DES DÉCONNEXIONS
-  // ==========================================
+
+
   if (response.status === "opponent_disconnected") {
-    alert(
-      "⚠️ Votre adversaire a été déconnecté ! S'il ne revient pas d'ici 1 minute, vous remportez la partie.",
-    );
-    return; // On arrête là
+    if (myRole !== "spectator") {
+      document.getElementById("phase-title").textContent = "L'adversaire est déconnecté";
+      document.getElementById("phase-desc").textContent = "Attendre 30 secondes";
+      document.getElementById("disconnect-title").textContent = "Votre adversaire a été déconnecté !";
+      document.getElementById("disconnect-body").textContent = "S'il ne revient pas d'ici 30 secondes, vous remportez la partie";
+      document.getElementById("disconnect-modal").classList.add("show");
+    }
+    return;
   } else if (response.status === "opponent_reconnected") {
-    alert("✅ Votre adversaire est de retour ! Le combat reprend.");
+    if (myRole !== "spectator") {
+      document.getElementById("disconnect-title").textContent = "Votre adversaire est de retour !";
+      document.getElementById("disconnect-body").textContent = "Le combat reprend";
+      document.getElementById("disconnect-modal").classList.add("show");
+    }
     return;
   } else if (response.status === "victory_by_abandon") {
     gameOver = true;
@@ -744,6 +751,13 @@ function closeEndModal() {
   const endModal = document.getElementById("end-modal");
   if (endModal) {
     endModal.classList.remove("show");
+  }
+}
+
+function closeDisconnectModal() {
+  const disconnectModal = document.getElementById("disconnect-modal");
+  if (disconnectModal) {
+    disconnectModal.classList.remove("show");
   }
 }
 
