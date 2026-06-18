@@ -51,14 +51,17 @@ socket.onmessage = function(event) {
         const modalBody = document.getElementById("modal-body");
         
         if (endModal && modalTitle && modalBody) {
-            // On adapte le titre si on est le vainqueur ou juste le spectateur
-            if (myRole === response.winner) {
-                modalTitle.innerText = "Victoire !";
-            } else {
-                modalTitle.innerText = "Partie terminée";
+            if (myRole === "spectator") {
+              if (response.winner === "white"){
+                modalBody.innerHTML = "Les Blancs remportent la partie !";
+              }
+              else {
+                modalBody.innerHTML = "Les Noirs remportent la partie !";
+              }
             }
-            
-            modalBody.innerHTML = response.message;
+            else {
+              modalBody.innerHTML = "Votre adversaire a fui !<br><strong>Victoire</strong>";
+            }
             endModal.classList.add("show");
         }
         return;
