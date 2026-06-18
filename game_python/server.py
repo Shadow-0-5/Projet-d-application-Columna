@@ -43,7 +43,7 @@ async def abandon_timer(room_id, disconnected_role):
                 
     try:
         # 2. ⏱️ On patiente 1 minute
-        await asyncio.sleep(60) 
+        await asyncio.sleep(5) 
         
         # 3. 🏁 Si on arrive ici, les 60s sont écoulées, forfait !
         if room_id in parties:
@@ -53,7 +53,6 @@ async def abandon_timer(room_id, disconnected_role):
             new_state = {
                 "status": "victory_by_abandon",
                 "winner": winner,
-                "message": f"Victoire par forfait ! Les {disconnected_role}s ont fui le combat."
             }
             
             for client in parties[room_id]["clients"]:
@@ -149,7 +148,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 new_state = {
                     "status": "victory_by_abandon",
                     "winner": winner,
-                    "message": "L'adversaire a capitulé. Vous remportez la victoire !"
                 }
                 for client in p["clients"]:
                     try:

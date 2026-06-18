@@ -31,6 +31,9 @@ socket.onmessage = function (event) {
   // On traduit le texte JSON reçu en objet JavaScript
   const response = JSON.parse(event.data);
   console.log("Mise à jour reçue du serveur :", response);
+  // ==========================================
+  // 🚨 NOUVEAU : GESTION DES DÉCONNEXIONS
+  // ==========================================
   if (response.status === "opponent_disconnected") {
     alert(
       "⚠️ Votre adversaire a été déconnecté ! S'il ne revient pas d'ici 1 minute, vous remportez la partie.",
@@ -47,13 +50,16 @@ socket.onmessage = function (event) {
     const modalBody = document.getElementById("modal-body");
 
     if (endModal && modalTitle && modalBody) {
-      if (myRole === response.winner) {
-        modalTitle.innerText = "Victoire !";
+      if (myRole === "spectator") {
+        if (response.winner === "white") {
+          modalBody.innerHTML = "Les Blancs remportent la partie !";
+        } else {
+          modalBody.innerHTML = "Les Noirs remportent la partie !";
+        }
       } else {
-        modalTitle.innerText = "Partie terminée";
+        modalBody.innerHTML =
+          "Votre adversaire a fui !<br><strong>Victoire</strong>";
       }
-
-      modalBody.innerHTML = response.message;
       endModal.classList.add("show");
     }
     return;
