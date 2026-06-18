@@ -4,7 +4,7 @@ import asyncio
 import json
 
 from board import Board
-from player import Player # Import de ton IA
+from player import Player
 
 app = FastAPI()
 
@@ -27,102 +27,175 @@ def get_board_state(partie):
         "phase": partie["phase"]
     }
 
-# On ajoute le paramètre "mode" à la connexion
+# ==========================================
+# ⏱️ LE CHRONOMÈTRE D'ABANDON (60 SECONDES)
+# ==========================================
+async def abandon_timer(room_id, disconnected_role):
+    # 1. 🚨 On prévient l'adversaire IMMÉDIATEMENT depuis cette tâche sécurisée
+    if room_id in parties:
+        for client in parties[room_id]["clients"]:
+            try:
+                await client.send_json({"status": "opponent_disconnected"})
+            except Exception:
+                pass
+                
+    try:
+        # 2. ⏱️ On patiente 1 minute
+        await asyncio.sleep(60) 
+        
+        # 3. 🏁 Si on arrive ici, les 60s sont écoulées, forfait !
+        if room_id in parties:
+            winner = "black" if disconnected_role == "white" else "white"
+            parties[room_id]["phase"] = "game_over" 
+            
+            new_state = {
+                "status": "victory_by_abandon",
+                "winner": winner,
+                "message": f"Victoire par forfait ! Les {disconnected_role}s ont fui le combat."
+            }
+            
+            for client in parties[room_id]["clients"]:
+                try:
+                    await client.send_json(new_state)
+                except Exception:
+                    pass
+    except asyncio.CancelledError:
+        # 🛑 Cette exception est déclenchée si on annule le chrono (le joueur est revenu)
+        pass
+
 @app.websocket("/ws/{room_id}")
-async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "multi"):
+async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "multi", player_id: str = ""):
     await websocket.accept()
     
     if room_id not in parties:
-        print(f"Création de la partie {room_id} (Mode: {mode})")
         parties[room_id] = {
             "board": Board(screen=None),
             "clients": [],
             "turn": "white",
             "phase": "move",
             "mode": mode,
-            "ia": Player(color="black", IA=True) if mode == "ia" else None # L'IA joue les Noirs
+            "ia": Player(color="black", IA=True) if mode == "ia" else None,
+            "ws_white": None, 
+            "ws_black": None,
+            "id_white": None,
+            "id_black": None,
+            "task_white": None, # ⏱️ Stocke le chrono du joueur Blanc
+            "task_black": None  # ⏱️ Stocke le chrono du joueur Noir
         }
     
-    # 1. Attribuer les couleurs
-    nb_joueurs = len(parties[room_id]["clients"])
-    
-    if parties[room_id]["mode"] == "ia":
-        # En mode IA, le joueur humain est toujours Blanc, et personne d'autre ne peut jouer
-        role = "white" if nb_joueurs == 0 else "spectator"
-    else:
-        # En mode Multi, Blanc puis Noir
-        if nb_joueurs == 0:
+    p = parties[room_id]
+    role = "spectator"
+
+    if player_id:
+        if player_id == p["id_white"]:
             role = "white"
-        elif nb_joueurs == 1:
+            p["ws_white"] = websocket
+            # 🛑 LE JOUEUR BLANC EST REVENU : On annule son chrono d'abandon !
+            if p["task_white"]:
+                p["task_white"].cancel()
+                p["task_white"] = None
+                for client in p["clients"]:
+                    await client.send_json({"status": "opponent_reconnected"})
+                    
+        elif player_id == p["id_black"]:
             role = "black"
+            p["ws_black"] = websocket
+            # 🛑 LE JOUEUR NOIR EST REVENU : On annule son chrono d'abandon !
+            if p["task_black"]:
+                p["task_black"].cancel()
+                p["task_black"] = None
+                for client in p["clients"]:
+                    await client.send_json({"status": "opponent_reconnected"})
+
+    if role == "spectator":
+        if mode == "ia":
+            if p["id_white"] is None:
+                role = "white"
+                p["ws_white"] = websocket
+                p["id_white"] = player_id
         else:
-            role = "spectator"
-            
-    parties[room_id]["clients"].append(websocket)
+            if p["id_white"] is None:
+                role = "white"
+                p["ws_white"] = websocket
+                p["id_white"] = player_id
+            elif p["id_black"] is None:
+                role = "black"
+                p["ws_black"] = websocket
+                p["id_black"] = player_id
+                
+    p["clients"].append(websocket)
 
     try:
         await websocket.send_json({
             "status": "sync",
             "role": role,
-            "state": get_board_state(parties[room_id])
+            "state": get_board_state(p)
         })
 
         while True:
             data = await websocket.receive_json()
             
+            if p["turn"] == "white" and websocket != p.get("ws_white"): continue
+            if p["turn"] == "black" and websocket != p.get("ws_black"): continue
+            if p["phase"] == "game_over": continue # 🔒 Bloque les clics si la partie est finie
+                
             if data["action"] in ["move", "stack"]:
-                parties[room_id]["board"].move(tuple(data["from"]), tuple(data["to"]))
+                p["board"].move(tuple(data["from"]), tuple(data["to"]))
                 
                 if data["action"] == "move":
-                    parties[room_id]["phase"] = "stack"
+                    p["phase"] = "stack"
                 elif data["action"] == "stack":
-                    parties[room_id]["phase"] = "move"
-                    parties[room_id]["turn"] = "black" if parties[room_id]["turn"] == "white" else "white"
+                    p["phase"] = "move"
+                    p["turn"] = "black" if p["turn"] == "white" else "white"
                 
-                # On diffuse le plateau après l'action de l'humain
                 new_state = {
                     "status": "update",
-                    "state": get_board_state(parties[room_id])
+                    "state": get_board_state(p)
                 }
-                for client in parties[room_id]["clients"]:
+                for client in p["clients"]:
                     await client.send_json(new_state)
 
-                # ==========================================
-                # 🤖 DECLENCHEMENT DE L'IA
-                # ==========================================
-                if parties[room_id]["mode"] == "ia" and parties[room_id]["turn"] == "black":
-                    print("L'IA réfléchit...")
-                    
-                    # On fait tourner le Minimax dans un thread séparé pour ne pas freezer le serveur
-                    ia_player = parties[room_id]["ia"]
-                    le_board = parties[room_id]["board"]
-                    
-                    # L'IA calcule son coup
+                if p["mode"] == "ia" and p["turn"] == "black":
+                    ia_player = p["ia"]
+                    le_board = p["board"]
                     action = await asyncio.to_thread(ia_player.take_action, le_board)
                     
                     if action:
                         move_action, stack_action = action
+                        p["board"].move(move_action[0], move_action[1])
+                        p["board"].move(stack_action[0], stack_action[1])
+                        p["turn"] = "white"
+                        p["phase"] = "move"
                         
-                        # L'IA applique son mouvement
-                        parties[room_id]["board"].move(move_action[0], move_action[1])
-                        # L'IA applique son empilement
-                        parties[room_id]["board"].move(stack_action[0], stack_action[1])
-                        
-                        # Fin du tour de l'IA, c'est au tour de l'humain (Blancs)
-                        parties[room_id]["turn"] = "white"
-                        parties[room_id]["phase"] = "move"
-                        
-                        print("L'IA a joué :", action)
-                        
-                        # On diffuse le nouveau plateau après le coup de l'IA
                         new_state_ia = {
                             "status": "update",
-                            "state": get_board_state(parties[room_id])
+                            "state": get_board_state(p)
                         }
-                        for client in parties[room_id]["clients"]:
+                        for client in p["clients"]:
                             await client.send_json(new_state_ia)
-                    else:
-                        print("L'IA n'a plus de coups possibles !")
+
+# ... (Ceci est la fin de la boucle "while True:" et des actions du joueur)
 
     except Exception as e:
-        parties[room_id]["clients"].remove(websocket)
+        # On ignore les erreurs classiques de la boucle
+        pass
+        
+    finally:
+        # ==========================================
+        # 🔌 QUAND UN CÂBLE SE DÉBRANCHE (Même si on ferme l'onglet d'un coup)
+        # ==========================================
+        if websocket in p["clients"]:
+            p["clients"].remove(websocket)
+            
+        disc_role = None
+        if websocket == p.get("ws_white"):
+            disc_role = "white"
+            p["ws_white"] = None
+        elif websocket == p.get("ws_black"):
+            disc_role = "black"
+            p["ws_black"] = None
+            
+        # Si c'est un vrai joueur qui vient de partir
+        if disc_role:
+            # 🚀 On délègue tout le travail à la nouvelle tâche (qui survit à la fermeture)
+            p[f"task_{disc_role}"] = asyncio.create_task(abandon_timer(room_id, disc_role))
