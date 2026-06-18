@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Autoriser ton frontend local à parler à ton backend local
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -18,11 +17,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
     print("Un joueur s'est connecté !")
     try:
         while True:
-            # On reçoit directement du JSON (FastAPI le transforme en dictionnaire Python)
             data = await websocket.receive_json()
             print(f"[Salon {room_id}] Action reçue : {data}")
             
-            # On simule une réponse structurée en JSON pour l'instant
             reponse = {
                 "status": "success",
                 "message": "Le serveur a bien reçu ton action",
@@ -30,4 +27,4 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
             }
             await websocket.send_json(reponse)
     except Exception as e:
-        print("Le joueur s'est déconnecté.")
+        print(f"Le joueur s'est déconnecté. {e}")
