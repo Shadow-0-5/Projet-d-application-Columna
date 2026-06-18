@@ -63,8 +63,22 @@ socket.onmessage = function (event) {
     for (const [r, c] of serverState.black_pawns) {
       board[r][c].pion = "black";
     }
+    
+    // 4. Mettre à jour les derniers mouvements depuis le serveur
+    if (serverState.last_pion_move) {
+      lastPionMove = {
+        from: serverState.last_pion_move.from,
+        to: serverState.last_pion_move.to
+      };
+    }
+    if (serverState.last_stack_move) {
+      lastStackMove = {
+        from: serverState.last_stack_move.from,
+        to: serverState.last_stack_move.to
+      };
+    }
 
-    // 4. On redessine l'interface
+    // 5. On redessine l'interface
     render();
   }
 };
@@ -95,6 +109,8 @@ let currentPlayer = "white";
 let phase = "move"; // 'move' | 'stack'
 let selectedCell = null; // {r, c}
 let gameOver = false;
+let lastPionMove = null; // {from: [r,c], to: [r,c]}
+let lastStackMove = null; // {from: [r,c], to: [r,c]}
 
 function initBoard() {
   board = [];
@@ -236,6 +252,7 @@ function render() {
 
   updateStatusBar();
   updateScores();
+  drawArrows();
   document.getElementById("btn-cancel").style.display = selectedCell
     ? "block"
     : "none";
@@ -302,6 +319,108 @@ function applyInteractions(el, r, c, cell) {
   }
 }
 
+// ========== DESSINER LES FLÈCHES ==========
+
+function drawArrows() {
+  // On crée ou récupère le conteneur SVG pour les flèches
+  let svgContainer = document.getElementById("arrows-svg");
+  if (!svgContainer) {
+    const boardWrap = document.querySelector(".board-wrap");
+    svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgContainer.id = "arrows-svg";
+    svgContainer.style.position = "absolute";
+    svgContainer.style.top = "0";
+    svgContainer.style.left = "0";
+    svgContainer.style.pointerEvents = "none";
+    svgContainer.style.overflow = "visible";
+    boardWrap.style.position = "relative";
+    boardWrap.appendChild(svgContainer);
+  }
+  
+  // On nettoie les flèches précédentes
+  svgContainer.innerHTML = "";
+  
+  // Dimensions d'une cellule (doit correspondre au CSS)
+  const cellSize = 82;
+  const gap = 4;
+  const cellWithGap = cellSize + gap;
+  const boardPadding = 8;
+  
+  // Fonction pour calculer la position du centre d'une cellule
+  function getCellCenter(r, c) {
+    const x = boardPadding + c * cellWithGap + cellSize / 2;
+    const y = boardPadding + r * cellWithGap + cellSize / 2;
+    return { x, y };
+  }
+  
+  // Fonction pour dessiner une flèche
+  function drawArrow(from, to, color, markerId, strokeDasharray = null) {
+    const start = getCellCenter(from[0], from[1]);
+    const end = getCellCenter(to[0], to[1]);
+    
+    // Ligne
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", start.x);
+    line.setAttribute("y1", start.y);
+    line.setAttribute("x2", end.x);
+    line.setAttribute("y2", end.y);
+    line.setAttribute("stroke", color);
+    line.setAttribute("stroke-width", "3");
+    line.setAttribute("marker-end", `url(#${markerId})`);
+    if (strokeDasharray) {
+      line.setAttribute("stroke-dasharray", strokeDasharray);
+    }
+    svgContainer.appendChild(line);
+  }
+  
+  // Définition des marqueurs de flèche (une pour chaque couleur)
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+  
+  // Marqueur pour flèche pion (bleu)
+  const markerPion = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+  markerPion.setAttribute("id", "arrowhead-pion");
+  markerPion.setAttribute("markerWidth", "10");
+  markerPion.setAttribute("markerHeight", "10");
+  markerPion.setAttribute("refX", "9");
+  markerPion.setAttribute("refY", "3");
+  markerPion.setAttribute("orient", "auto");
+  const polygonPion = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  polygonPion.setAttribute("points", "0 0, 10 3, 0 6");
+  polygonPion.setAttribute("fill", "#4A90E2");
+  markerPion.appendChild(polygonPion);
+  defs.appendChild(markerPion);
+  
+  // Marqueur pour flèche dalle (orange)
+  const markerStack = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+  markerStack.setAttribute("id", "arrowhead-stack");
+  markerStack.setAttribute("markerWidth", "10");
+  markerStack.setAttribute("markerHeight", "10");
+  markerStack.setAttribute("refX", "9");
+  markerStack.setAttribute("refY", "3");
+  markerStack.setAttribute("orient", "auto");
+  const polygonStack = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  polygonStack.setAttribute("points", "0 0, 10 3, 0 6");
+  polygonStack.setAttribute("fill", "#1dae00");
+  markerStack.appendChild(polygonStack);
+  defs.appendChild(markerStack);
+  
+  svgContainer.appendChild(defs);
+  
+  // Dessiner la flèche du dernier mouvement de pion en bleu
+  if (lastPionMove) {
+    drawArrow(lastPionMove.from, lastPionMove.to, "#4A90E2", "arrowhead-pion");
+  }
+  
+  // Dessiner la flèche du dernier mouvement de dalle en orange tiretée
+  if (lastStackMove) {
+    drawArrow(lastStackMove.from, lastStackMove.to, "#1dae00", "arrowhead-stack", "8,4");
+  }
+  
+  // Définir les bonnes dimensions du SVG
+  svgContainer.setAttribute("width", boardPadding * 2 + BOARD_SIZE * cellWithGap);
+  svgContainer.setAttribute("height", boardPadding * 2 + BOARD_SIZE * cellWithGap);
+}
+
 // ========== ACTIONS ==========
 
 function selectPion(r, c) {
@@ -327,6 +446,9 @@ function movePion(fr, fc, tr, tc) {
   board[fr][fc].pion = null;
   selectedCell = null;
   phase = "stack";
+  
+  // Enregistrer le dernier mouvement de pion
+  lastPionMove = { from: [fr, fc], to: [tr, tc] };
 
   if (!canCurrentPlayerStack()) {
     endGame();
@@ -357,6 +479,10 @@ function stackTiles(fr, fc, tr, tc) {
   board[fr][fc].height = null;
   board[fr][fc].pion = null;
   selectedCell = null;
+  
+  // Enregistrer le dernier mouvement de dalle
+  lastStackMove = { from: [fr, fc], to: [tr, tc] };
+  
   nextTurn();
 }
 

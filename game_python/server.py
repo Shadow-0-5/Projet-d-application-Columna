@@ -24,7 +24,9 @@ def get_board_state(partie):
         "white_pawns": partie["board"].white_pawns,
         "black_pawns": partie["board"].black_pawns,
         "turn": partie["turn"],
-        "phase": partie["phase"]
+        "phase": partie["phase"],
+        "last_pion_move": partie.get("last_pion_move"),
+        "last_stack_move": partie.get("last_stack_move")
     }
 
 # On ajoute le paramètre "mode" à la connexion
@@ -75,9 +77,12 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 
                 if data["action"] == "move":
                     parties[room_id]["phase"] = "stack"
+                    parties[room_id]["last_pion_move"] = {"from": data["from"], "to": data["to"]}
+                    parties[room_id]["last_stack_move"] = None
                 elif data["action"] == "stack":
                     parties[room_id]["phase"] = "move"
                     parties[room_id]["turn"] = "black" if parties[room_id]["turn"] == "white" else "white"
+                    parties[room_id]["last_stack_move"] = {"from": data["from"], "to": data["to"]}
                 
                 # On diffuse le plateau après l'action de l'humain
                 new_state = {
@@ -105,8 +110,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                         
                         # L'IA applique son mouvement
                         parties[room_id]["board"].move(move_action[0], move_action[1])
+                        parties[room_id]["last_pion_move"] = {"from": list(move_action[0]), "to": list(move_action[1])}
+                        
                         # L'IA applique son empilement
                         parties[room_id]["board"].move(stack_action[0], stack_action[1])
+                        parties[room_id]["last_stack_move"] = {"from": list(stack_action[0]), "to": list(stack_action[1])}
                         
                         # Fin du tour de l'IA, c'est au tour de l'humain (Blancs)
                         parties[room_id]["turn"] = "white"
