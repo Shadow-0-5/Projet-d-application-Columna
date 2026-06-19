@@ -38,58 +38,58 @@ POINTS_EVALUATION_DEFAULT = {
     "T1" : 0,
 }
 
-POINTS_EVALUATION_MOBILITY = {
-    "T5" : 20,
-    "T5_D1" : 8,
-    "T5_D2" : 4,
-    "T5_D3" : 2,
+# POINTS_EVALUATION_MOBILITY = {
+#     "T5" : 20,
+#     "T5_D1" : 8,
+#     "T5_D2" : 4,
+#     "T5_D3" : 2,
 
-    "T4" : 10,
-    "T4_D1" : 4,
-    "T4_D2" : 1,
-    "T4_D3" : 0,
+#     "T4" : 10,
+#     "T4_D1" : 4,
+#     "T4_D2" : 1,
+#     "T4_D3" : 0,
 
-    "T3" : 4,
-    "T3_D1" : 1,
-    "T3_D2" : 0,
-    "T3_D3" : 0,
+#     "T3" : 4,
+#     "T3_D1" : 1,
+#     "T3_D2" : 0,
+#     "T3_D3" : 0,
 
-    "T2" : 2,
-    "T2_D1" : 0,
-    "T2_D2" : 0,
-    "T2_D3" : 0,
+#     "T2" : 2,
+#     "T2_D1" : 0,
+#     "T2_D2" : 0,
+#     "T2_D3" : 0,
 
-    "T1" : 0,
-}
+#     "T1" : 0,
+# }
 
-POINTS_EVALUATION_TOWER = {
-    "T5" : 80,
-    "T5_D1" : 38,
-    "T5_D2" : 25,
-    "T5_D3" : 10,
+# POINTS_EVALUATION_TOWER = {
+#     "T5" : 80,
+#     "T5_D1" : 38,
+#     "T5_D2" : 25,
+#     "T5_D3" : 10,
 
-    "T4" : 35,
-    "T4_D1" : 25,
-    "T4_D2" : 10,
-    "T4_D3" : 5,
+#     "T4" : 35,
+#     "T4_D1" : 25,
+#     "T4_D2" : 10,
+#     "T4_D3" : 5,
 
-    "T3" : 10,
-    "T3_D1" : 6,
-    "T3_D2" : 4,
-    "T3_D3" : 0,
+#     "T3" : 10,
+#     "T3_D1" : 6,
+#     "T3_D2" : 4,
+#     "T3_D3" : 0,
 
-    "T2" : 5,
-    "T2_D1" : 3,
-    "T2_D2" : 0,
-    "T2_D3" : 0,
+#     "T2" : 5,
+#     "T2_D1" : 3,
+#     "T2_D2" : 0,
+#     "T2_D3" : 0,
 
-    "T1" : 0,
-}
+#     "T1" : 0,
+# }
 
 
 class Player:
     def __init__(self, color, IA=False, profondeur = 1):
-        self.POINTS_EVALUATION = POINTS_EVALUATION_MOBILITY
+        self.POINTS_EVALUATION = POINTS_EVALUATION_DEFAULT
 
         self.IA = IA
         self.color = color
@@ -97,20 +97,6 @@ class Player:
         self.is_calculating = False
         self.action = None
         self.PROFONDEUR = profondeur
-
-    def set_type(self, board):
-        if board.turn <= 10:
-            self.type = "mobility"
-        elif board.turn <= 20:
-            self.type = "default"
-        else:
-            self.type = "tower"
-        if self.type == "default":
-            self.POINTS_EVALUATION = POINTS_EVALUATION_DEFAULT
-        elif self.type == "mobility":
-            self.POINTS_EVALUATION = POINTS_EVALUATION_MOBILITY
-        elif self.type == "tower":
-            self.POINTS_EVALUATION = POINTS_EVALUATION_TOWER
 
 
     def take_action(self, board):
@@ -132,9 +118,7 @@ class Player:
         i = -1
         for move in all_moves_possible:
             if profondeur == self.PROFONDEUR:
-                # print(f"move {i} / {len(all_moves_possible)}")
                 i+=1
-            # vboard = board.copy()
             board.move(move[0], move[1])
             all_stacks_possible = board.get_all_slabs_stack()
             if not all_stacks_possible:
@@ -161,7 +145,6 @@ class Player:
                     for _ in range(50-percent): bar += " " 
                     print(bar+"|", end='')
                     j += 1
-                # vvboard = vboard.copy()
                 nb_dalles = board.move(stack[0], stack[1])
                 u_min, _ = self.tour_min(board, alpha, beta, profondeur-1)
                 board.undo_move(stack[0], stack[1], nb_dalles)
@@ -187,7 +170,6 @@ class Player:
         u = None
         a = None
         for move in all_moves_possible:
-            # vboard = board.copy()
             board.move(move[0], move[1])
             all_stacks_possible = board.get_all_slabs_stack()
             if not all_stacks_possible:
@@ -206,7 +188,6 @@ class Player:
                     return (u, a)
                 beta = min(beta, u)
             for stack in all_stacks_possible:
-                # vvboard = vboard.copy()
                 nb_dalles = board.move(stack[0], stack[1])
                 u_max, _ = self.tour_max(board, alpha, beta, profondeur-1)
                 board.undo_move(stack[0], stack[1], nb_dalles)
