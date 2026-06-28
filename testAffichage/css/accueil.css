@@ -421,6 +421,10 @@ details li {
         width: 32px;
         height: 32px;
     }
+
+    details {
+        margin-top: 10px;
+    }
 }
 
 /* ── Téléphone étroit (≤ 480px) ──────────────────────────── */

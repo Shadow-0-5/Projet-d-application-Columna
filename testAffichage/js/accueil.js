@@ -37,6 +37,18 @@ function hideJoinInput() {
   if (!joinInput.value.trim()) {
     joinInput.type = "hidden";
     submitButton.classList.remove("visible");
+    if (window.innerWidth <= 650) {
+      const formSection = joinInput.closest("section");
+      formSection.style.position = "";
+      formSection.style.top = "";
+      formSection.style.left = "";
+      formSection.style.transform = "";
+      formSection.style.width = "";
+      formSection.style.zIndex = "";
+      formSection.style.marginTop = "";
+      document.querySelector("details").style.marginTop = "";
+      document.getElementById("btn-ia").style.marginTop = "";
+    }
   }
 }
 
@@ -71,6 +83,23 @@ document.getElementById("btn-rejoindre").addEventListener("click", function () {
   submitButton.classList.add("visible");
   joinInput.focus();
   resetHideJoinInputTimer();
+
+  if (window.innerWidth <= 650) {
+    const rect = document
+      .getElementById("btn-rejoindre")
+      .getBoundingClientRect();
+    const formSection = joinInput.closest("section");
+    formSection.style.position = "absolute";
+    formSection.style.top = rect.bottom + window.scrollY + 8 + "px";
+    formSection.style.left = "50%";
+    formSection.style.transform = "translateX(-50%)";
+    formSection.style.width = "90%";
+    formSection.style.zIndex = "10";
+    formSection.style.marginTop = "0";
+    const formHeight = 60;
+    document.getElementById("btn-ia").style.marginTop = formHeight + "px";
+    // console.log("bottom:", rect.bottom, "scrollY:", window.scrollY);
+  }
 });
 
 joinInput.addEventListener("input", resetHideJoinInputTimer);
