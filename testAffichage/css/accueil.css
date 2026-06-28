@@ -161,7 +161,7 @@ h2 {
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
 }
 
 /* ── Bouton générique ─────────────────────────────────────── */
@@ -323,7 +323,6 @@ summary {
     font-size: clamp(1rem, 3vw, 1.2rem);
     letter-spacing: 0.06em;
     list-style: none;
-    /* Retire la flèche par défaut du navigateur */
 }
 
 summary::before {
@@ -403,17 +402,6 @@ details li {
     }
 }
 
-/* ================================================================
-   MEDIA QUERIES — les règles qui s'activent selon la taille d'écran
-   ================================================================
-   Principe : on code d'abord pour grand écran (desktop-first),
-   puis on adapte avec max-width pour les plus petits.
-
-   Breakpoints choisis :
-     650px  = tablette portrait / grand téléphone paysage
-     480px  = téléphone standard
-   ================================================================ */
-
 /* ── Tablette et petit écran (≤ 650px) ───────────────────── */
 @media (max-width: 650px) {
     body {
@@ -421,17 +409,14 @@ details li {
         font-size: 16px;
     }
 
-    /* Les 3 boutons passent en 1 colonne sur mobile */
     .buttons {
         grid-template-columns: 1fr;
     }
 
-    /* Les boutons s'allongent moins en hauteur sur mobile */
     .btn {
         min-height: 64px;
     }
 
-    /* L'image dans les boutons réduit légèrement */
     .btn .button_image {
         width: 32px;
         height: 32px;
@@ -448,7 +433,6 @@ details li {
 
     h1 {
         padding: 4px 16px;
-        /* Moins de padding pour gagner de l'espace */
     }
 
     .game-description {
