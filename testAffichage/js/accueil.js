@@ -1,3 +1,5 @@
+let bannerGone = false;
+
 document.addEventListener("DOMContentLoaded", () => {
   const RENDER_WS_URL = "wss://columna.onrender.com/ws/ping";
   const checkSocket = new WebSocket(RENDER_WS_URL);
@@ -13,6 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         banner.classList.add("hidden-soft");
         checkSocket.close();
+        setTimeout(() => {
+          bannerGone = true;
+        }, 500);
       }, 2000);
     }
   };
@@ -79,6 +84,7 @@ document.getElementById("btn-creer").addEventListener("click", function () {
 
 // Rejoindre une partie
 document.getElementById("btn-rejoindre").addEventListener("click", function () {
+  if (!bannerGone) return;
   joinInput.type = "text";
   submitButton.classList.add("visible");
   joinInput.focus();
@@ -90,7 +96,8 @@ document.getElementById("btn-rejoindre").addEventListener("click", function () {
       .getBoundingClientRect();
     const formSection = joinInput.closest("section");
     formSection.style.position = "absolute";
-    formSection.style.top = rect.bottom + window.scrollY + 8 + "px";
+    const bodyRect = document.body.getBoundingClientRect();
+    formSection.style.top = rect.bottom - bodyRect.top + 45 + "px";
     formSection.style.left = "50%";
     formSection.style.transform = "translateX(-50%)";
     formSection.style.width = "90%";
@@ -98,7 +105,6 @@ document.getElementById("btn-rejoindre").addEventListener("click", function () {
     formSection.style.marginTop = "0";
     const formHeight = 60;
     document.getElementById("btn-ia").style.marginTop = formHeight + "px";
-    // console.log("bottom:", rect.bottom, "scrollY:", window.scrollY);
   }
 });
 
