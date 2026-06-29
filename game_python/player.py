@@ -4,8 +4,7 @@
 from board import Board
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-
-PROFONDEUR = 1
+import iaC
 
 # distance :  |   0   |   1   |   2   |   3   |   4+
 
@@ -38,18 +37,23 @@ POINTS_EVALUATION = {
 }
 
 class Player:
-    def __init__(self, color, IA=False):
+    def __init__(self, color, IA=False, profondeur=1):
         self.IA = IA
         self.color = color
-
+        self.profondeur = profondeur
         self.is_calculating = False
         self.action = None
 
+    def take_action_C(self, board):
+        color = 0 if self.color == "white" else 1
+        self.action = iaC.take_action(board.dalles, board.white_pawns, board.black_pawns, self.profondeur, color)
+        self.is_calculating = False
+        return self.action
+
     def take_action(self, board):
         board2 = board.copy()
-        _, self.action = self.tour_max(board2, -10000, 10000, PROFONDEUR)
+        _, self.action = self.tour_max(board2, -10000, 10000, self.profondeur)
         self.is_calculating = False
-        print(self.action)
         return self.action
     
 
@@ -60,7 +64,10 @@ class Player:
         all_moves_possible = board.get_all_pawns_move(self.color)
         u = None
         a = None
+        i=0
         for move in all_moves_possible:
+            i+=1
+            # print(i, "/", len(all_moves_possible))
             board.move(move[0], move[1])
             all_stacks_possible = board.get_all_slabs_stack()
             if not all_stacks_possible:

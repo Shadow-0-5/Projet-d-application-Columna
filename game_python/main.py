@@ -12,7 +12,6 @@ from board import Board
 from player import Player
 from math import floor
 
-
 class Main:
     def __init__(self):
         self.screen = pygame.display.set_mode((620, 620))
@@ -21,8 +20,8 @@ class Main:
         self.selected_case = None
 
         self.board = Board(self.screen)
-        self.player_white = Player("white")
-        self.player_black = Player("black", True)
+        self.player_white = Player("white", True, 1)
+        self.player_black = Player("black", True, 2)
 
         self.current_player = random.choice([self.player_black, self.player_white])
         self.current_action = "pawn"  # pawn / slab
@@ -85,21 +84,26 @@ class Main:
             if not self.current_player.is_calculating:
                 if self.current_player.action:
                     self.previous_move, self.previous_stack = self.current_player.action
+                    self.current_player.action = None
                     self.board.move(self.previous_move[0], self.previous_move[1])
                     self.all_moves_possible = self.board.get_all_slabs_stack()
                     if not self.all_moves_possible:
                         print(self.board.get_result())
                         self.current_player = None
+                        return
                     self.board.move(self.previous_stack[0], self.previous_stack[1])
                     self.all_moves_possible = self.board.get_all_pawns_move(self.current_player.color)
                     if not self.all_moves_possible:
                         print(self.board.get_result())
                         self.current_player = None
-                    self.current_player.action = None
+                        return
                     self.current_player = self.player_white if self.current_player == self.player_black else self.player_black
                 else:
                     self.current_player.is_calculating = True
-                    thread_bot = threading.Thread(target=self.current_player.take_action, args=(self.board,))
+                    if self.current_player.color == "white":
+                        thread_bot = threading.Thread(target=self.current_player.take_action, args=(self.board,))
+                    else:
+                        thread_bot = threading.Thread(target=self.current_player.take_action_C, args=(self.board,))
                     thread_bot.start()
 
     def display(self):
