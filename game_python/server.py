@@ -69,7 +69,8 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
             "turn": start_turn,
             "phase": "move",
             "mode": mode,
-            "ia": Player(color="black", IA=True, profondeur=1) if mode == "ia" else None,
+            "ia": Player(color="black", IA=True, pyORcy="python", profondeur=1) if mode == "ia" else None,
+            # "ia": Player(color="black", IA=True, pyORcy="cython", profondeur=2) if mode == "ia" else None,
             "ws_white": None, 
             "ws_black": None,
             "id_white": None,
@@ -86,7 +87,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
         })
             ia = parties[room_id]["ia"]
             le_board = parties[room_id]["board"]
-            # action = await asyncio.to_thread(ia.take_action_C, le_board)
             action = await asyncio.to_thread(ia.take_action, le_board)
             if action:
                 m_act, s_act = action
@@ -217,7 +217,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, mode: str = "mu
                 if p["mode"] == "ia" and p["turn"] == "black":
                     ia_player = p["ia"]
                     le_board = p["board"]
-                    # action = await asyncio.to_thread(ia_player.take_action_C, le_board)
                     action = await asyncio.to_thread(ia_player.take_action, le_board)
 
                     if action:

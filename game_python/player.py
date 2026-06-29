@@ -37,22 +37,21 @@ POINTS_EVALUATION = {
 }
 
 class Player:
-    def __init__(self, color, IA=False, profondeur=1):
+    def __init__(self, color, IA=False, pyORcy="python", profondeur=1):
         self.IA = IA
         self.color = color
         self.profondeur = profondeur
         self.is_calculating = False
         self.action = None
-
-    def take_action_C(self, board):
-        color = 0 if self.color == "white" else 1
-        self.action = iaC.take_action(board.dalles, board.white_pawns, board.black_pawns, self.profondeur, color)
-        self.is_calculating = False
-        return self.action
+        self.pyORcy = pyORcy
 
     def take_action(self, board):
-        board2 = board.copy()
-        _, self.action = self.tour_max(board2, -10000, 10000, self.profondeur)
+        if self.pyORcy == "python":
+            board2 = board.copy()
+            _, self.action = self.tour_max(board2, -10000, 10000, self.profondeur)
+        else:
+            color = 0 if self.color == "white" else 1
+            self.action = iaC.take_action(board.dalles, board.white_pawns, board.black_pawns, self.profondeur, color)
         self.is_calculating = False
         return self.action
     

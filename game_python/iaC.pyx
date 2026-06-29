@@ -126,6 +126,7 @@ cdef void tour_max(Evaluation *res, Board *board, double alpha, double beta, int
                 return 
             if alpha < res.value:
                 alpha = res.value
+            undo_move(board, all_moves_possible[i], 0)
         else:
             for j in range(len_stacks):
                 if progression_bar:
@@ -198,6 +199,7 @@ cdef void tour_min(Evaluation *res, Board *board, double alpha, double beta, int
                 return 
             if beta > res.value:
                 beta = res.value
+            undo_move(board, all_moves_possible[i], 0)
         else:
             for j in range(len_stacks):
                 nb_dalles = make_move(board, all_stacks_possible[j])
