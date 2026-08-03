@@ -31,8 +31,6 @@
     --border: rgba(100, 70, 20, 0.3);
     --gold: #7a4e10;
     --gold-dim: #b08040;
-
-    /* Taille d'une case — modifiée en media query mobile */
     --cell-size: 82px;
 }
 
@@ -46,6 +44,8 @@ body {
     font-family: "Kaushan Script", cursive;
     margin: 0;
     padding: 12px 20px 20px;
+    box-sizing: border-box;
+    min-width: 380px;
     background-image: url("../../img/bamboo.png");
     background-size: cover;
     background-position: center;
@@ -57,7 +57,6 @@ body {
     gap: 12px;
     color: var(--text);
     user-select: none;
-    overflow-x: hidden;
     overflow-y: auto;
 }
 
@@ -78,7 +77,7 @@ body {
 }
 
 .mini-title-container {
-    width: 220px;
+    width: max-content;
     flex-shrink: 0;
     display: flex;
     justify-content: flex-start;
@@ -103,7 +102,6 @@ body {
     border-radius: 10px;
     padding: 6px 14px;
     flex: 1;
-    max-width: 600px;
     min-width: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
@@ -361,7 +359,6 @@ body {
 }
 
 /* ── Dalles ───────────────────────────────────────────────── */
-/* La taille suit --cell-size automatiquement */
 .tile-stack {
     position: absolute;
     width: calc(var(--cell-size) - 6px);
@@ -435,8 +432,6 @@ body {
     border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Les classes .white/.black + .pion-h* s'appliquent toutes deux,
-   donc on n'a besoin que d'une règle par hauteur (pas de doublons) */
 .pion.pion-h2 {
     transform: translate(0%, -100%);
 }
@@ -617,30 +612,90 @@ details li {
     font-size: 1.1rem;
     padding: 10px 18px;
 }
+/* ================================================================
+   TRANSITION BUREAU (901px – 1150px)
+   ================================================================ */
+
+   @media (min-width: 901px) and (max-width: 1150px) {
+    .jeu-container {
+        gap: 15px;
+    }
+
+    .side-panel-scores,
+    .side-panel-rules {
+        width: 200px;
+        flex-shrink: 1;
+    }
+}
 
 /* ================================================================
-   MOBILE (≤ 650px)
-   ================================================================
-   Ordre visuel :
-   1. Barre de statut (pleine largeur) + ID à droite sur la même ligne
-   2. Plateau carré (100% largeur écran)
-   3. Scores Blancs | Noirs côte à côte
-   4. Boutons Accueil | Abandonner
-   (titre et règles masqués)
+   INTERMÉDIAIRE (711px – 900px)
    ================================================================ */
-@media (max-width: 650px) {
+@media (min-width: 711px) and (max-width: 900px) {
+
+    .mini-title-container {
+        display: none;
+    }
+
+    .status-bar {
+        max-width: none;
+    }
+
+    .side-panel-rules {
+        display: none;
+    }
+    
+    .jeu-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .side-panel-scores {
+        display: contents;
+    }
+    .score-breakdown {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .score-card:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: end;
+        width: 170px;
+    }
+
+    .board-wrap {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .score-card:nth-child(2) {
+        grid-column: 3;
+        grid-row: 1;
+        justify-self: start;
+        width: 170px;
+    }
+}
+
+/* ================================================================
+   MOBILE (≤ 540px)
+   ================================================================ */
+@media (max-width: 710px) {
 
     body {
         padding: 8px;
         gap: 8px;
     }
 
-    /* Header : statut + ID sur une ligne, titre masqué */
     .game-header {
-        height: auto;
-        flex-wrap: nowrap;
+        justify-content: flex-start;
         gap: 6px;
-        align-items: center;
+        height: auto;
+        align-items: stretch;
     }
 
     .mini-title-container {
@@ -651,67 +706,71 @@ details li {
         flex: 1;
         max-width: none;
         padding: 6px 10px;
-        gap: 8px;
     }
-
-    .phase-label {
-        display: none;
-    }
-
-    /* trop verbeux sur mobile, on garde juste qui joue */
 
     .room-badge-container {
-        width: auto;
         flex-shrink: 0;
+        align-self: stretch;
+        width: auto;
     }
 
     .room-badge {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 0.75rem;
-        padding: 4px 8px;
+        padding: 0 10px;
         width: auto;
+        white-space: nowrap;
     }
 
-    /* Conteneur jeu : colonne */
+    .phase-label {
+        font-size: 0.72rem;
+    }
+
+    .phase-label strong {
+        font-size: 0.8rem;
+    }
+
     .jeu-container {
         flex-direction: column;
         align-items: stretch;
         gap: 8px;
     }
 
-    /* Règles masquées sur mobile */
     .side-panel-rules {
         display: none;
     }
 
-    /* Plateau pleine largeur
-     Calcul : 6 cases + 5 gaps de 4px + 2×padding 6px + 2×border 2px
-     = 6×cell + 20 + 12 + 4 = 6×cell + 36
-     → cell = (100vw - 16px padding body×2 - 36px) / 6 */
-    :root {
-        --cell-size: calc((100vw - 68px) / 6);
-    }
-
     .board-wrap {
         width: 100%;
+        position: relative;
+        padding-bottom: 100%;
     }
 
     .board {
+        position: absolute;
+        inset: 0;
         width: 100%;
+        height: 100%;
         padding: 6px;
-        gap: 3px;
+        gap: 4px;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(6, 1fr);
     }
 
     .tile-stack {
+        width: 100%;
+        height: 100%;
         font-size: 0.6rem;
     }
 
-    /* Pions proportionnels à la case */
     .pion {
-        width: calc(var(--cell-size) * 0.38);
-        height: calc(var(--cell-size) * 0.38);
+        width: 38%;
+        height: 38%;
     }
 
-    /* Scores : deux cartes côte à côte */
     .side-panel-scores {
         flex-direction: row;
         width: 100%;
@@ -732,7 +791,6 @@ details li {
         font-size: 0.9rem;
     }
 
-    /* Boutons pleine largeur */
     .actions {
         max-width: 100%;
     }

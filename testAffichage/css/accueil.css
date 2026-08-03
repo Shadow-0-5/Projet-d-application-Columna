@@ -38,6 +38,7 @@ body {
     background-attachment: fixed;
 
     min-height: 100vh;
+    min-width: 300px;
 
     display: flex;
     flex-direction: column;
