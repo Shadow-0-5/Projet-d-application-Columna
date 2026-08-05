@@ -629,9 +629,9 @@ details li {
 }
 
 /* ================================================================
-   INTERMÉDIAIRE (711px – 900px)
+   INTERMÉDIAIRE (710px – 900px)
    ================================================================ */
-@media (min-width: 711px) and (max-width: 900px) {
+@media (min-width: 710px) and (max-width: 900px) {
 
     .mini-title-container {
         display: none;
@@ -678,6 +678,21 @@ details li {
         grid-row: 1;
         justify-self: start;
         width: 170px;
+    }
+    .vous-tag {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+    }
+
+    .score-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .score-card:nth-child(1),
+    .score-card:nth-child(2) {
+        width: 100%;
+        max-width: 160px;
     }
 }
 

@@ -76,18 +76,16 @@ socket.onmessage = function (event) {
         }
       } else if (myRole === response.winner) {
         modalTitle.style.color = "var(--gold)";
-        modalBody.innerHTML =
-          "<strong>Victoire</strong>";
+        modalBody.innerHTML = "<strong>Victoire</strong>";
       } else {
-        modalBody.innerHTML =
-          "<strong>Défaite</strong>";
+        modalBody.innerHTML = "<strong>Défaite</strong>";
       }
       endModal.classList.add("show");
     }
 
     socket.close();
     return;
-  }else if (response.status === "victory_by_abandon") {
+  } else if (response.status === "victory_by_abandon") {
     gameOver = true;
     updateStatusBar();
 
@@ -138,11 +136,11 @@ socket.onmessage = function (event) {
     if (response.role) {
       myRole = response.role;
       if (myRole === "white") {
-        document.getElementById("score-card-name-white").innerText +=
-          "\t(Vous)";
+        document.getElementById("score-card-name-white").innerHTML =
+          "Blancs<br><span class='vous-tag'>(Vous)</span>";
       } else if (myRole === "black") {
-        document.getElementById("score-card-name-black").innerText +=
-          "\t(Vous)";
+        document.getElementById("score-card-name-black").innerHTML =
+          "Noirs<br><span class='vous-tag'>(Vous)</span>";
       } else {
         document.getElementById("phase-title").innerText = "Spectateur";
         document.getElementById("btn-abandon").style.display = "none";
@@ -186,6 +184,12 @@ socket.onmessage = function (event) {
     render();
   }
 };
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && selectedCell !== null) {
+    cancelSelection();
+  }
+});
 
 const BOARD_SIZE = 6;
 const MAX_PILE = 5;
@@ -706,11 +710,11 @@ function endGame() {
   document.getElementById("end-modal").classList.add("show");
 
   const btnAbandon = document.getElementById("btn-abandon");
-    if (btnAbandon) {
-      btnAbandon.disabled = true;
-      btnAbandon.style.opacity = "0.5";
-      btnAbandon.style.cursor = "not-allowed";
-    }
+  if (btnAbandon) {
+    btnAbandon.disabled = true;
+    btnAbandon.style.opacity = "0.5";
+    btnAbandon.style.cursor = "not-allowed";
+  }
 }
 
 function updateStatusBar() {
