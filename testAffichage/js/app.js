@@ -191,6 +191,17 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// NE FONCTIONNE PAS -> déselectionne direct
+// document.addEventListener("click", (e) => {
+//   if (
+//     selectedCell !== null &&
+//     !e.target.closest(".board") &&
+//     !e.target.closest(".actions")
+//   ) {
+//     cancelSelection();
+//   }
+// });
+
 const BOARD_SIZE = 6;
 const MAX_PILE = 5;
 const INITIAL_PIONS = {
