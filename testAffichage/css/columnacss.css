@@ -45,7 +45,7 @@ body {
     margin: 0;
     padding: 12px 20px 20px;
     box-sizing: border-box;
-    min-width: 380px;
+    min-width: 240px;
     background-image: url("../../img/bamboo.png");
     background-size: cover;
     background-position: center;
@@ -58,6 +58,7 @@ body {
     color: var(--text);
     user-select: none;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ================================================================
@@ -282,6 +283,11 @@ body {
     color: var(--text-dim);
     letter-spacing: 0.04em;
     font-family: sans-serif;
+}
+
+.vous-tag {
+    font-size: 0.85rem;
+    color: var(--text-dim);
 }
 
 /* ── Plateau centre ───────────────────────────────────────── */
@@ -632,7 +638,7 @@ details li {
    TRANSITION BUREAU (901px – 1150px)
    ================================================================ */
 
-   @media (min-width: 901px) and (max-width: 1150px) {
+   /* @media (min-width: 920px) and (max-width: 1150px) {
     .jeu-container {
         gap: 15px;
     }
@@ -642,12 +648,12 @@ details li {
         width: 200px;
         flex-shrink: 1;
     }
-}
+} */
 
 /* ================================================================
    INTERMÉDIAIRE (710px – 900px)
    ================================================================ */
-@media (min-width: 710px) and (max-width: 900px) {
+@media (min-width: 710px) and (max-width: 1200px) {
 
     .mini-title-container {
         display: none;
@@ -695,9 +701,10 @@ details li {
         justify-self: start;
         width: 170px;
     }
+    
     .vous-tag {
-        font-size: 0.85rem;
-        color: var(--text-dim);
+        display: block;
+        margin-top: 4px;
     }
 
     .score-card-header {

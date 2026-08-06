@@ -137,10 +137,10 @@ socket.onmessage = function (event) {
       myRole = response.role;
       if (myRole === "white") {
         document.getElementById("score-card-name-white").innerHTML =
-          "Blancs<br><span class='vous-tag'>(Vous)</span>";
+          "Blancs <span class='vous-tag'>(Vous)</span>";
       } else if (myRole === "black") {
         document.getElementById("score-card-name-black").innerHTML =
-          "Noirs<br><span class='vous-tag'>(Vous)</span>";
+          "Noirs <span class='vous-tag'>(Vous)</span>";
       } else {
         document.getElementById("phase-title").innerText = "Spectateur";
         document.getElementById("btn-abandon").style.display = "none";
