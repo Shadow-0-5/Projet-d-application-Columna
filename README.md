@@ -47,6 +47,10 @@ Repository du projet d'Application 3A INSA
 
 ## Remarques
 
+### Pour compiler la partie du bot cython
+Une fois dans le dossier 'game_python'
+-> python3 setup.py build_ext --inplace
+
 **IMPORTANT :** Dans le fichier **app.js** il faut modifier la **ligne 20** en insérant l'adresse web du serveur python. 
 
 

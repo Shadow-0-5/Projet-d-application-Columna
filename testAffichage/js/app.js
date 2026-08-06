@@ -136,11 +136,11 @@ socket.onmessage = function (event) {
     if (response.role) {
       myRole = response.role;
       if (myRole === "white") {
-        document.getElementById("score-card-name-white").innerHTML =
-          "Blancs <span class='vous-tag'>(Vous)</span>";
+        document.getElementById("score-card-name-white").innerText =
+          "Blancs\t(Vous)";
       } else if (myRole === "black") {
-        document.getElementById("score-card-name-black").innerHTML =
-          "Noirs <span class='vous-tag'>(Vous)</span>";
+        document.getElementById("score-card-name-black").innerText =
+          "Noirs\t(Vous)";
       } else {
         document.getElementById("phase-title").innerText = "Spectateur";
         document.getElementById("btn-abandon").style.display = "none";
@@ -173,14 +173,23 @@ socket.onmessage = function (event) {
         from: serverState.last_pion_move.from,
         to: serverState.last_pion_move.to,
       };
+    } else {
+      lastPionMove = {
+        from: null,
+        to: null,
+      };
     }
     if (serverState.last_stack_move) {
       lastStackMove = {
         from: serverState.last_stack_move.from,
         to: serverState.last_stack_move.to,
       };
+    } else {
+      lastStackMove = {
+        from: null,
+        to: null,
+      };
     }
-
     render();
   }
 };
