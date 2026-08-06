@@ -191,16 +191,13 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// NE FONCTIONNE PAS -> déselectionne direct
-// document.addEventListener("click", (e) => {
-//   if (
-//     selectedCell !== null &&
-//     !e.target.closest(".board") &&
-//     !e.target.closest(".actions")
-//   ) {
-//     cancelSelection();
-//   }
-// });
+document.addEventListener("click", (e) => {
+  if (selectedCell === null) return;
+  if (!document.body.contains(e.target)) return;
+  if (!e.target.closest(".board") && !e.target.closest(".actions")) {
+    cancelSelection();
+  }
+});
 
 const BOARD_SIZE = 6;
 const MAX_PILE = 5;
