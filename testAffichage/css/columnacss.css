@@ -45,7 +45,7 @@ body {
     margin: 0;
     padding: 12px 20px 20px;
     box-sizing: border-box;
-    min-width: 240px;
+    min-width: 250px;
     background-image: url("../../img/bamboo.png");
     background-size: cover;
     background-position: center;
@@ -462,16 +462,6 @@ body {
     position: relative;
 }
 
-/* details {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-} */
  details {
      position: absolute;
      top: 0;
@@ -634,21 +624,6 @@ details li {
     font-size: 1.1rem;
     padding: 10px 18px;
 }
-/* ================================================================
-   TRANSITION BUREAU (901px – 1150px)
-   ================================================================ */
-
-   /* @media (min-width: 920px) and (max-width: 1150px) {
-    .jeu-container {
-        gap: 15px;
-    }
-
-    .side-panel-scores,
-    .side-panel-rules {
-        width: 200px;
-        flex-shrink: 1;
-    }
-} */
 
 /* ================================================================
    INTERMÉDIAIRE (710px – 900px)
@@ -720,9 +695,9 @@ details li {
 }
 
 /* ================================================================
-   MOBILE (≤ 540px)
+   MOBILE (450px – 710px)
    ================================================================ */
-@media (max-width: 710px) {
+@media (min-width: 450px) and (max-width: 710px) {
 
     body {
         padding: 8px;
@@ -799,8 +774,8 @@ details li {
     }
 
     .tile-stack {
-        width: 100%;
-        height: 100%;
+        width: calc(100% - 6px);
+        height: calc(100% - 6px);
         font-size: 0.6rem;
     }
 
@@ -835,6 +810,111 @@ details li {
 
     .btn {
         font-size: 0.9rem;
+        padding: 10px 8px;
+    }
+}
+
+/* ================================================================
+   MOBILE (≤ 450px)
+   ================================================================ */
+@media (max-width: 450px) {
+
+    body {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .mini-title-container,
+    .side-panel-rules {
+        display: none !important;
+    }
+
+    #phase-desc {
+        display: none !important;
+    }
+
+    .game-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        height: auto;
+    }
+
+    .status-bar {
+        flex: 1;
+        max-width: none;
+        padding: 6px 10px;
+    }
+
+    .room-badge-container {
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    .room-badge {
+        height: auto;
+        display: block;
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        width: 100%;
+        white-space: normal;
+    }
+
+    .jeu-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .side-panel-scores {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .score-card {
+        width: 100%;
+        max-width: none;
+    }
+
+    .board-wrap {
+        width: 100%;
+        position: relative;
+        padding-bottom: 100%;
+    }
+
+    .board {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        padding: 6px;
+        gap: 4px;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        margin: 0;
+    }
+
+    .tile-stack {
+        width: calc(100% - 6px);
+        height: calc(100% - 6px);
+        font-size: 0.6rem;
+    }
+
+    .pion {
+        width: 38%;
+        height: 38%;
+    }
+
+    .actions {
+        max-width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        font-size: 0.95rem;
         padding: 10px 8px;
     }
 }

@@ -437,14 +437,20 @@ function drawArrows() {
 
   svgContainer.innerHTML = "";
 
-  const cellSize = 82;
-  const gap = 4;
-  const cellWithGap = cellSize + gap;
-  const boardPadding = 8;
-
   function getCellCenter(r, c) {
-    const x = boardPadding + c * cellWithGap + cellSize / 2;
-    const y = boardPadding + r * cellWithGap + cellSize / 2;
+    const cellEl = document.querySelector(
+      `.cell[data-r="${r}"][data-c="${c}"]`,
+    );
+    const svgEl = document.getElementById("arrows-svg");
+
+    if (!cellEl || !svgEl) return { x: 0, y: 0 };
+
+    const cellRect = cellEl.getBoundingClientRect();
+    const svgRect = svgEl.getBoundingClientRect();
+
+    const x = cellRect.left - svgRect.left + cellRect.width / 2;
+    const y = cellRect.top - svgRect.top + cellRect.height / 2;
+
     return { x, y };
   }
 
@@ -505,6 +511,9 @@ function drawArrows() {
   defs.appendChild(markerStack);
 
   svgContainer.appendChild(defs);
+  const boardEl = document.getElementById("board");
+  svgContainer.setAttribute("width", boardEl.offsetWidth);
+  svgContainer.setAttribute("height", boardEl.offsetHeight);
 
   if (lastPionMove) {
     drawArrow(lastPionMove.from, lastPionMove.to, "#4A90E2", "arrowhead-pion");
@@ -795,3 +804,7 @@ function restartGame() {
 
 initBoard();
 //render();
+
+window.addEventListener("resize", () => {
+  if (!gameOver) drawArrows();
+});
