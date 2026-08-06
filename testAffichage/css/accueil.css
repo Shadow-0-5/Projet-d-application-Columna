@@ -431,3 +431,99 @@ details li {
         padding: 10px 14px;
     }
 }
+
+/* ================================================================
+   ACCUEIL : MOBILE PAYSAGE (Orientation Landscape, Hauteur < 500px)
+   ================================================================ */
+@media (orientation: landscape) and (max-height: 500px) {
+
+    /* 1. On coupe l'écran en deux colonnes strictes */
+    body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+            "titre actions"
+            "banniere actions"
+            "regles actions";
+        gap: 8px 16px;
+        height: 100dvh;
+        overflow: hidden;
+        /* 🔒 Interdiction absolue de scroller */
+        padding: 10px 20px;
+    }
+
+    /* 2. Purge brutale du superflu pour garantir l'absence de scroll */
+    .game-description,
+    h2 {
+        display: none !important;
+    }
+
+    /* 3. Colonne Gauche : Identité et Règles */
+    h1 {
+        grid-area: titre;
+        margin: 0;
+        font-size: 1.5rem;
+        padding: 4px 12px;
+        align-self: start;
+        width: max-content;
+    }
+
+    .server-banner {
+        grid-area: banniere;
+        margin: 0;
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+
+    details {
+        grid-area: regles;
+        margin: 0;
+        max-height: 100%;
+        overflow-y: auto;
+        /* Seules les règles ont le droit de scroller si on les ouvre */
+        font-size: 0.85rem;
+    }
+
+    /* 4. Colonne Droite : Le centre de commande */
+    .buttons {
+        grid-area: actions;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Centre les boutons verticalement */
+        gap: 8px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .buttons .btn {
+        min-height: 45px;
+        font-size: 0.9rem;
+        padding: 4px 10px;
+    }
+
+    .buttons .btn .button_image {
+        width: 24px;
+        height: 24px;
+    }
+
+    /* On s'assure que le formulaire (qui est dans une section) remonte correctement */
+    section[style*="margin-top"] {
+        grid-area: actions;
+        align-self: end;
+        margin-top: 0 !important;
+        margin-bottom: 4px;
+    }
+
+    #form-rejoindre {
+        margin: 0;
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    #btn-submit-rejoindre {
+        margin: 0;
+        min-height: 38px;
+    }
+}
