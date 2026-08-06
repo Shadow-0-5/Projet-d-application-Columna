@@ -678,13 +678,17 @@ details li {
     }
     
     .vous-tag {
-        display: block;
+        display: block; /*inline ?*/
         margin-top: 4px;
     }
 
     .score-card-header {
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
         text-align: center;
+        align-items: center;
+        gap: 8px;
     }
 
     .score-card:nth-child(1),
@@ -929,7 +933,7 @@ details li {
         gap: 8px;
         display: grid;
         grid-template-columns: 1fr auto 1fr;
-        grid-template-rows: 1fr auto;
+        grid-template-rows: auto 1fr auto;
         height: 100dvh;
         min-height: 0;
         /* overflow: hidden; */
@@ -946,22 +950,20 @@ details li {
         display: none !important;
     }
 
-        .score-breakdown {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-between;
-            width: 100%;
-            gap: 2px;
-        }
-    
-        /* On force les compteurs à s'écraser proprement pour tout faire rentrer */
-        .score-breakdown .score-pip {
-            flex: 1;
-            padding: 4px 2px;
-            min-width: 0;
-            /* Empêche le débordement si l'espace manque */
-        }
+    .score-breakdown {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        width: 100%;
+        gap: 2px;
+    }
+
+    .score-breakdown .score-pip {
+        flex: 1;
+        padding: 4px 2px;
+        min-width: 0;
+    }
 
     .side-panel-scores {
         grid-column: 1;
@@ -981,12 +983,13 @@ details li {
 
     .actions {
         grid-column: 1;
-        grid-row: 2;
+        grid-row: 3;
         align-self: end;
         flex-direction: column;
         width: 100%;
         max-width: 160px;
         margin-bottom: 4px;
+        gap: 8px;
     }
 
     .btn {
@@ -994,9 +997,13 @@ details li {
         font-size: 0.9rem;
     }
 
+    #btn-home{
+        /*TODO*/
+    }
+
     .board-wrap {
         grid-column: 2;
-        grid-row: 1 / span 2;
+        grid-row: 1 / span 3;
         height: calc(100dvh - 16px);
         width: calc(100dvh - 16px);
         padding-bottom: 0;
@@ -1041,8 +1048,9 @@ details li {
     }
 
     .player-indicator {
-        flex-direction: column;
-        gap: 4px;
+        flex-direction: row;
+        justify-content: center;
+            align-items: center;
     }
 
     .phase-label {
