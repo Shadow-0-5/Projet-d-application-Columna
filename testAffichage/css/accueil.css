@@ -52,10 +52,26 @@ body {
     overflow-y: auto;
 }
 
+.conteneur-principal>* {
+    margin: 0 !important;
+}
+
+.conteneur-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    /* gap: 12px; */
+    gap: clamp(12px, 3.5dvh, 32px);
+}
+
 h1 {
     text-align: center;
     font-size: clamp(2.5rem, 12vw, 5rem);
-    margin: 10px 0 16px 0;
+    margin: 0;
     background-color: blanchedalmond;
     border-radius: 10px;
     padding: 4px 30px;
@@ -71,10 +87,11 @@ h2 {
     font-size: clamp(1.2rem, 4vw, 1.8rem);
     letter-spacing: 0.15em;
     color: var(--text-dim);
-    margin: 10px 0 20px 0;
+    margin: 0;
     background-color: blanchedalmond;
     border-radius: 8px;
     padding: 8px 16px;
+    padding-top: clamp(4px, 1.5dvh, 16px);
     max-width: 580px;
 
 }
@@ -86,17 +103,15 @@ h2 {
     justify-content: center;
     background: var(--surface);
     border: 1px solid var(--border);
-    margin-top: -20px;
     border-radius: 12px;
-    padding: 16px 24px;
-    width: 100%;
+    padding: clamp(16px, 2.5vw, 32px) clamp(16px, 4vw, 48px);    width: 100%;
     max-width: 680px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .game-description .tagline {
-    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-size: clamp(1rem, 3vw, 1.8rem);
     color: var(--gold);
     font-weight: bold;
     letter-spacing: 0.05em;
@@ -105,19 +120,19 @@ h2 {
 }
 
 .game-description .pitch {
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-    line-height: 1.5;
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    line-height: clamp(1.3, 2vw, 1.6);;
     color: var(--text);
 }
 
 .server-banner {
     width: 100%;
-    max-width: 675px;
+    max-width: 680px;
     padding: 10px 10px;
     border-radius: 8px;
     font-size: clamp(0.85rem, 2.5vw, 1.1rem);
-    margin-top: -10px;
-    margin-bottom: 20px;
+    /* margin-top: -10px; */
+    /* margin-bottom: 20px; */
     text-align: center;
     display: flex;
     align-items: center;
@@ -291,7 +306,7 @@ h2 {
 
 details {
     width: 100%;
-    max-width: 580px;
+    max-width: 680px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -437,9 +452,9 @@ details li {
 }
 
 /* ================================================================
-   ACCUEIL : MOBILE PAYSAGE (Orientation Landscape, Hauteur < 500px)
+   ACCUEIL : MOBILE PAYSAGE (Orientation Landscape, Hauteur < 610px)
    ================================================================ */
-@media (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (max-height: 610px) {
 
     body {
         padding: 8px 12px;
@@ -453,13 +468,16 @@ details li {
     }
 
     h1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        align-self: center;
         width: 100%;
         margin: 0;
-        max-width: none;
+        max-width: 1100px;
         padding: 4px 16px;
         font-size: clamp(2.5rem, 13dvh, 4rem);
-        align-self: start;
-        text-align: center;
         background-color: blanchedalmond;
         border-radius: 8px;
         color: var(--gold);
@@ -495,15 +513,18 @@ details li {
         grid-column: 1 / 3;
         grid-row: 2 / 5;
         margin: 0;
+        max-width: none;
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
         overflow-y: auto;
-        padding: clamp(2px, 1.5dvh, 8px) clamp(4px, 2vw, 12px);
-        font-size: clamp(0.6rem, 3dvh, 0.9rem);
-        line-height: clamp(1.1, 4dvh, 1.4);
+        padding: clamp(12px, 4dvh, 24px) clamp(16px, 4vw, 32px);
+        font-size: clamp(0.7rem, 3.5dvh, 1rem);
+        line-height: clamp(1.2, 4dvh, 1.5);
     }
 
     .buttons,
