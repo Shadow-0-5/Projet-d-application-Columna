@@ -1066,11 +1066,15 @@ details li {
 
     .room-badge-container {
         grid-column: 3;
-        grid-row: 2;
+        grid-row: 3;
         align-self: end;
+        justify-self: end;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
         width: 100%;
         max-width: 220px;
-        justify-self: end;
+        margin: 0;
         margin-bottom: 4px;
     }
 
@@ -1078,5 +1082,6 @@ details li {
         height: auto;
         padding: 8px;
         width: 100%;
+        font-size: 0.85rem;
     }
 }
