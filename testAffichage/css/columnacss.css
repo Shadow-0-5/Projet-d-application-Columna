@@ -684,11 +684,9 @@ details li {
 
     .score-card-header {
         display: flex;
-        flex-direction: row;
-        justify-content: center;
-        text-align: center;
         align-items: center;
         gap: 8px;
+        margin-bottom: 8px;
     }
 
     .score-card:nth-child(1),
@@ -936,7 +934,7 @@ details li {
         grid-template-rows: auto 1fr auto;
         height: 100dvh;
         min-height: 0;
-        /* overflow: hidden; */
+        overflow: hidden;
     }
 
     .game-header,
@@ -973,32 +971,40 @@ details li {
         align-self: start;
         gap: 6px;
         width: 100%;
-        max-width: 160px;
+        max-width: 220px;
     }
 
     .score-card {
         width: 100%;
         padding: 6px;
     }
+    
+    .score-card:nth-child(1),
+    .score-card:nth-child(2) {
+        width: 100%;
+        max-width: 220px;
+    }
 
     .actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
         grid-column: 1;
         grid-row: 3;
         align-self: end;
+        justify-self: start;
         flex-direction: column;
         width: 100%;
-        max-width: 160px;
-        margin-bottom: 4px;
-        gap: 8px;
+        margin: 0;
+        margin-bottom: 6px;
+        gap: 6px;
+        max-width: 220px
     }
+                
 
     .btn {
         padding: 6px 10px;
         font-size: 0.9rem;
-    }
-
-    #btn-home{
-        /*TODO*/
     }
 
     .board-wrap {
@@ -1042,7 +1048,7 @@ details li {
         justify-content: flex-start;
         text-align: center;
         width: 100%;
-        max-width: 160px;
+        max-width: 220px;
         justify-self: end;
         padding: 8px;
     }
@@ -1063,7 +1069,7 @@ details li {
         grid-row: 2;
         align-self: end;
         width: 100%;
-        max-width: 160px;
+        max-width: 220px;
         justify-self: end;
         margin-bottom: 4px;
     }

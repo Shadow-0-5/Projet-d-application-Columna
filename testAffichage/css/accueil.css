@@ -80,6 +80,10 @@ h2 {
 }
 
 .game-description {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     background: var(--surface);
     border: 1px solid var(--border);
     margin-top: -20px;
